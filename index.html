@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>東京中央區：不動產與飯店開發潛力分析報告</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIINfQkVZhDdmwS8R4pDlykgQ0dQ4Xf5tD0=" crossorigin="">
+    <title>東京中央區旅館市場與分布分析報告</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIINfQkVZhDdmwS8R4pDlykgQ0dQ4Xf5tD0=" crossorigin="">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <style>
         body {
@@ -253,8 +251,8 @@
 
     <header class="header-banner">
         <div class="container">
-            <h1 class="display-5 fw-bold">東京中央區旅館開發策略分析報告</h1>
-            <p class="lead mt-3">2024-2025 年度趨勢：生活機能 VS. 土地潛力之深度探討</p>
+            <h1 class="display-5 fw-bold">東京中央區旅館市場與分布分析報告</h1>
+            <p class="lead mt-3">以中央區旅館業設施名錄為基礎的市場分類與地理分布整理</p>
         </div>
     </header>
 
@@ -265,16 +263,16 @@
             <div class="col-lg-6">
                 <div class="card p-4 h-100">
                     <h4>1. 中央區住宿設施概況</h4>
-                    <p>根據目前市場與公開數據評估，中央區約有 <strong>250～300 間</strong> 登記住宿設施。隨著疫情後訪日外國遊客（Inbound）的強勢回歸，2024 至 2025 年間的客房稼働率已穩定回升，並呈現供不應求的趨勢。</p>
+                    <p>本頁以中央區旅館業設施名錄去重後 <strong>243 家</strong> 住宿設施為分析母體；其中商務型 74 家、一般／觀光型 169 家。東京都層級 2025 年住宿指標可作為需求環境參考，但中央區單館入住率、ADR、RevPAR 與營收未在本資料集中公開，因此不在本頁推估。</p>
                     
-                    <h4 class="mt-4">2. 立地條件與開發驅動力</h4>
+                    <h4 class="mt-4">2. 立地條件與區域特徵</h4>
                     <div class="highlight-box mt-3">
-                        <strong>先有雞（看重現有生活機能）：銀座、日本橋</strong><br>
-                        這裡具備頂級商業設施與極致的交通便利性。在此區開發的邏輯是直接吸收現有龐大的消費人流。
+                        <strong>既有商業與交通核心：銀座、日本橋</strong><br>
+                        名錄中的旅館集中在銀座、日本橋、京橋・八重洲等商業與交通節點；此觀察來自設施地址與地圖分布，不直接推論單館收益表現。
                     </div>
                     <div class="highlight-box mt-3">
-                        <strong>先有蛋（看重土地潛在價值）：築地、八重洲周邊</strong><br>
-                        受惠於築地市場搬遷後的廣大腹地及八重洲的大型都市更新，此區開發注重未來的資產增值（Capital Gain），以飯店帶動周邊區域發展。
+                        <strong>新近登錄與更新題材區域：築地、八重洲周邊</strong><br>
+                        築地、八重洲周邊可觀察到新近登錄或品牌型住宿案例；本頁僅將其作為區位與市場分類觀察，不估算土地增值或營運績效。
                     </div>
                 </div>
             </div>
@@ -302,203 +300,81 @@
 
         <h2 class="section-title">二、 分類基準與市場定位</h2>
         <div class="card p-4">
-            <p>根據觀光廳的統計邏輯，為精確評估投資報酬率與建造成本，我們將設施以「客房規模」與「服務型態」進行兩大分類：</p>
+            <p>本頁沿用資料表中的 <code>market_group</code> 分類，將 243 家設施整理為「商務型」與「一般／觀光型」兩組；此分類是市場定位代理，不代表官方星級、實際房價或營運績效。</p>
             <div class="row mt-3">
                 <div class="col-md-6">
                     <h5>🏛️ 一般旅館 (Full-service / Luxury)</h5>
-                    <p class="text-muted">這類旅館主主打高附加價值、品牌溢價與高端設施（客房數通常較多或主打極致精品）。</p>
+                    <p class="text-muted">這一組包含觀光、全服務、生活風格、公寓式與其他非商務型住宿；其共同點是未被資料表歸為商務型。</p>
                 </div>
                 <div class="col-md-6">
                     <h5>🏨 商務旅館 (Business Hotel)</h5>
-                    <p class="text-muted">這類旅館主打住宿特化、高坪效、交通極度便利，以及高周轉率。</p>
+                    <p class="text-muted">這一組為資料表標示的商務型住宿；可用於觀察交通節點周邊的住宿供給，但不直接代表實際周轉率或獲利能力。</p>
                 </div>
             </div>
         </div>
-
-        <h2 class="section-title">三、 中央區指標性旅館 Top 10 比較表</h2>
-        
+        <h2 class="section-title">三、 中央區代表性旅館案例與資料限制</h2>
         <div class="card p-4">
+            <p class="text-muted mb-3">以下改為「非排名」案例整理。案例用於說明中央區旅館類型與區位差異，不代表營收、ADR、評價或推薦順序。若資料來源未公開單館入住率、ADR、RevPAR 或營收，表格一律標示為未公開。</p>
             <h5 class="mb-3 d-flex align-items-center">
-                <span class="badge badge-luxury me-2">🏛️ 一般旅館</span> Full-service / Luxury Top 10
+                <span class="badge badge-luxury me-2">一般／觀光型</span> 代表性案例（非排名）
             </h5>
             <div class="table-responsive">
                 <table class="table table-hover align-middle">
                     <thead>
                         <tr>
-                            <th style="width: 8%;">排名</th>
-                            <th style="width: 30%;">旅館名稱</th>
-                            <th style="width: 15%;">坐落區域</th>
-                            <th style="width: 47%;">市場定位與優勢說明</th>
+                            <th style="width: 24%;">旅館名稱</th>
+                            <th style="width: 14%;">區位</th>
+                            <th style="width: 13%;">開業／發布資訊</th>
+                            <th style="width: 9%;">客房數</th>
+                            <th style="width: 28%;">定位摘要</th>
+                            <th style="width: 12%;">資料狀態</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td class="fw-bold">東京文華東方酒店 <br><small class="text-muted">Mandarin Oriental, Tokyo</small></td>
-                            <td>日本橋</td>
-                            <td>坐擁金融街頂級客層，ADR（平均客房收益）極高。</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td class="fw-bold">東京康萊德酒店 <br><small class="text-muted">Conrad Tokyo</small></td>
-                            <td>汐留/銀座邊界</td>
-                            <td>深受歐美外國旅客喜愛。</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td class="fw-bold">東京寶格麗飯店 <br><small class="text-muted">Bulgari Hotel Tokyo</small></td>
-                            <td>八重洲</td>
-                            <td>近年新開幕，主打極致奢華，代表土地開發的新潛力。</td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td class="fw-bold">銀座 AC 酒店 <br><small class="text-muted">AC Hotel by Marriott Tokyo Ginza</small></td>
-                            <td>銀座</td>
-                            <td>外資品牌進駐精華商圈的代表。</td>
-                        </tr>
-                        <tr>
-                            <td>5</td>
-                            <td class="fw-bold">三井花園飯店銀座普米爾 <br><small class="text-muted">Mitsui Garden Hotel Ginza Premier</small></td>
-                            <td>銀座</td>
-                            <td>高級精品型，景觀與評價極佳。</td>
-                        </tr>
-                        <tr>
-                            <td>6</td>
-                            <td class="fw-bold">東京千禧三井花園飯店 <br><small class="text-muted">Millennium Mitsui Garden Hotel Tokyo</small></td>
-                            <td>銀座</td>
-                            <td>地理位置絕佳（銀座正中心），深受海外高端散客喜愛。</td>
-                        </tr>
-                        <tr>
-                            <td>7</td>
-                            <td class="fw-bold">皇家花園飯店 <br><small class="text-muted">Royal Park Hotel</small></td>
-                            <td>日本橋蠣殼町</td>
-                            <td>水天宮前站直結，中央區內少數具備大型宴會廳與多間高級餐廳的傳統全服務型大飯店。</td>
-                        </tr>
-                        <tr>
-                            <td>8</td>
-                            <td class="fw-bold">東京銀座萬怡酒店 <br><small class="text-muted">Courtyard by Marriott Tokyo Ginza</small></td>
-                            <td>銀座</td>
-                            <td>萬豪集團的穩健品牌，商務與休閒客群通吃。</td>
-                        </tr>
-                        <tr>
-                            <td>9</td>
-                            <td class="fw-bold">銀座賽萊斯廷酒店 <br><small class="text-muted">Hotel The Celestine Ginza</small></td>
-                            <td>銀座</td>
-                            <td>三井不動產旗下的高端精品線，主打隱密性與專屬服務。</td>
-                        </tr>
-                        <tr>
-                            <td>10</td>
-                            <td class="fw-bold">濱町飯店 <br><small class="text-muted">Hamacho Hotel Tokyo</small></td>
-                            <td>日本橋濱町</td>
-                            <td>近年日本橋地區「社區營造（まちづくり）」的指標性設計飯店，帶動周邊土地質感提升。</td>
-                        </tr>
+                        <tr><td class="fw-bold">Mandarin Oriental, Tokyo</td><td>日本橋室町</td><td>2005-12-02</td><td>179</td><td>奢華全服務；國際觀光、商務與餐飲目的客。</td><td>單館營收未公開</td></tr>
+                        <tr><td class="fw-bold">Bvlgari Hotel Tokyo</td><td>八重洲</td><td>2023-04-04</td><td>98</td><td>超奢華品牌型住宿；位於八重洲大型複合設施周邊。</td><td>單館營收未公開</td></tr>
+                        <tr><td class="fw-bold">Tokyo EDITION, Ginza</td><td>銀座</td><td>2023-12／2024-03</td><td>86</td><td>奢華生活風格品牌；銀座核心區位案例。</td><td>單館營收未公開</td></tr>
+                        <tr><td class="fw-bold">Hyatt Centric Ginza Tokyo</td><td>銀座</td><td>2018-01-22</td><td>164</td><td>高階生活風格全服務；外國品牌聯盟案例。</td><td>單館營收未公開</td></tr>
+                        <tr><td class="fw-bold">Aloft Tokyo Ginza</td><td>銀座</td><td>2020-10-01</td><td>205</td><td>生活風格精選服務；外國品牌聯盟案例。</td><td>單館營收未公開</td></tr>
+                        <tr><td class="fw-bold">MUJI HOTEL GINZA</td><td>銀座</td><td>2019-04-04</td><td>79</td><td>設計／品牌體驗型住宿；日本品牌案例。</td><td>單館營收未公開</td></tr>
+                        <tr><td class="fw-bold">Hotel K5</td><td>日本橋兜町</td><td>2020-02</td><td>20</td><td>小型精品設計旅館；日本橋兜町案例。</td><td>單館營收未公開</td></tr>
+                        <tr><td class="fw-bold">Mitsui Garden Hotel Ginza Tsukiji</td><td>築地</td><td>2024-09-30</td><td>183</td><td>高階城市型住宿；築地周邊新近案例。</td><td>單館營收未公開</td></tr>
                     </tbody>
                 </table>
             </div>
+            <p class="small text-muted mb-0">來源：代表性旅館基本資料表與各旅館／品牌官方公開頁面；本頁不使用未公開的單館營運數據。</p>
         </div>
 
         <div class="card p-4">
             <h5 class="mb-3 d-flex align-items-center">
-                <span class="badge badge-business me-2">🏨 商務旅館</span> Business Hotel Top 10
+                <span class="badge badge-business me-2">商務型</span> 名錄樣本（非排名）
             </h5>
             <div class="table-responsive">
                 <table class="table table-hover align-middle">
                     <thead>
                         <tr>
-                            <th style="width: 8%;">排名</th>
-                            <th style="width: 30%;">旅館名稱</th>
-                            <th style="width: 15%;">坐落區域</th>
-                            <th style="width: 47%;">市場定位與優勢說明</th>
+                            <th style="width: 28%;">設施名稱</th>
+                            <th style="width: 14%;">所在地</th>
+                            <th style="width: 18%;">區域群</th>
+                            <th style="width: 12%;">許可年份</th>
+                            <th style="width: 28%;">開設者</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td class="fw-bold">APA Hotel 體系</td>
-                            <td>銀座/京橋一帶</td>
-                            <td>以極高的客房數量和定價靈活性佔據市場率。</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td class="fw-bold">多美迎 PREMIUM 銀座 <br><small class="text-muted">Dormy Inn Premium Ginza</small></td>
-                            <td>銀座</td>
-                            <td>附設天然溫泉，在旅客評價中長期霸榜。</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td class="fw-bold">相鐵 FRESA INN <br><small class="text-muted">Sotetsu Fresa Inn</small></td>
-                            <td>日本橋/銀座</td>
-                            <td>地點極佳，深受散客喜愛。</td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td class="fw-bold">東橫 INN <br><small class="text-muted">Toyoko Inn</small></td>
-                            <td>東京站八重洲北口等</td>
-                            <td>國內商務客的絕對基石。</td>
-                        </tr>
-                        <tr>
-                            <td>5</td>
-                            <td class="fw-bold">超級酒店 Premier <br><small class="text-muted">Super Hotel Premier</small></td>
-                            <td>銀座</td>
-                            <td>主打健康與環保概念，差異化經營成功。</td>
-                        </tr>
-                        <tr>
-                            <td>6</td>
-                            <td class="fw-bold">銀座大和 ROYNET 飯店 <br><small class="text-muted">Daiwa Roynet Hotel Ginza</small></td>
-                            <td>銀座</td>
-                            <td>客房空間通常比一般商務旅館寬敞，深受帶行李箱的亞洲旅客歡迎。</td>
-                        </tr>
-                        <tr>
-                            <td>7</td>
-                            <td class="fw-bold">銀座格拉斯麗飯店 <br><small class="text-muted">Hotel Gracery Ginza</small></td>
-                            <td>銀座</td>
-                            <td>藤田觀光集團旗下，衛浴獨立設計（浴廁分離）在同級距中極具競爭力。</td>
-                        </tr>
-                        <tr>
-                            <td>8</td>
-                            <td class="fw-bold">雷姆東京京橋飯店 <br><small class="text-muted">remm Tokyo Kyobashi</small></td>
-                            <td>京橋</td>
-                            <td>阪急阪神集團旗下，主打「優質睡眠」特化，客房全配備按摩椅，定位精準。</td>
-                        </tr>
-                        <tr>
-                            <td>9</td>
-                            <td class="fw-bold">京王布萊索酒店 茅場町 <br><small class="text-muted">Keio Presso Inn Kayabacho</small></td>
-                            <td>日本橋茅場町</td>
-                            <td>房價具競爭力且附贈早餐，是國內出差員工的性價比首選。</td>
-                        </tr>
-                        <tr>
-                            <td>10</td>
-                            <td class="fw-bold">VIA INN 東銀座 <br><small class="text-muted">Via Inn Higashi Ginza</small></td>
-                            <td>築地/東銀座</td>
-                            <td>JR 西日本集團經營，位置鄰近築地，能同時吸納商務與早起觀光的客群。</td>
-                        </tr>
+                        <tr><td class="fw-bold">アパホテル〈銀座京橋南〉</td><td>京橋</td><td>京橋・八重洲</td><td>2013</td><td>アパホテル株式会社</td></tr>
+                        <tr><td class="fw-bold">ダイワロイネットホテル銀座 PREMIER</td><td>銀座</td><td>銀座</td><td>2015</td><td>大和ハウスリアルティマネジメント株式会社</td></tr>
+                        <tr><td class="fw-bold">東急ステイ築地</td><td>築地</td><td>築地・新富</td><td>2015</td><td>東急リゾーツ＆ステイ株式会社</td></tr>
+                        <tr><td class="fw-bold">アパホテル&lt;築地駅南&gt;</td><td>築地</td><td>築地・新富</td><td>2011</td><td>アパホテル株式会社</td></tr>
+                        <tr><td class="fw-bold">ワシントンR＆Bホテル東日本橋</td><td>東日本橋</td><td>日本橋</td><td>1998</td><td>ワシントンホテル株式会社</td></tr>
+                        <tr><td class="fw-bold">アパホテル&lt;東日本橋駅前&gt;</td><td>東日本橋</td><td>日本橋</td><td>2014</td><td>アパホテル株式会社</td></tr>
+                        <tr><td class="fw-bold">東横ＩＮＮ日本橋人形町</td><td>日本橋蛎殻町</td><td>日本橋</td><td>2004</td><td>株式会社東横イン</td></tr>
+                        <tr><td class="fw-bold">相鉄フレッサイン日本橋人形町</td><td>日本橋蛎殻町</td><td>日本橋</td><td>2012</td><td>株式会社相鉄ホテルマネジメント</td></tr>
+                        <tr><td class="fw-bold">京王プレッソイン日本橋茅場町</td><td>日本橋茅場町</td><td>日本橋</td><td>2008</td><td>株式会社京王プレッソイン</td></tr>
+                        <tr><td class="fw-bold">東横ＩＮＮ茅場町駅</td><td>日本橋茅場町</td><td>日本橋</td><td>2023</td><td>株式会社東横イン</td></tr>
                     </tbody>
                 </table>
             </div>
-        </div>
-
-        <h2 class="section-title">四、 統整與結論分析</h2>
-        <div class="row mb-5">
-            <div class="col-lg-7">
-                <div class="card p-4 h-100">
-                    <h4>給決策層的最終建議</h4>
-                    <p>受惠於日圓貶值，2024-2025 年訪日消費額創下新高。在東京中央區買地蓋飯店，「看重生活機能」與「看重土地潛力」的策略應與<strong>旅館定位</strong>直接掛鉤：</p>
-                    <ul class="mt-3">
-                        <li class="mb-3"><strong>策略一：找雞策略 (商務旅館)</strong><br>
-                            若鎖定商務與預算型遊客，應選擇現有交通節點（車站徒步5分鐘內）的零碎土地。此客群重視<strong>現有生活機能與交通</strong>，開發風險低且現金流回收快。
-                        </li>
-                        <li><strong>策略二：養蛋策略 (一般旅館)</strong><br>
-                            若鎖定富裕層，應選擇如築地、八重洲等具備大型都更題材的區域。高消費客群重視品牌體驗，飯店本身即能帶動區域質感，適合賺取長期的<strong>土地資本利得 (Capital Gain)</strong>。
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-lg-5">
-                <div class="card p-4 h-100 d-flex flex-column justify-content-center align-items-center">
-                    <h5 class="text-center mb-4">中央區飯店開發：機能與潛力決策矩陣</h5>
-                    <canvas id="strategyChart" width="400" height="300"></canvas>
-                </div>
-            </div>
+            <p class="small text-muted mb-0">來源：中央區旅宿名錄去重 243 筆；上表為商務型樣本，非排名或推薦清單。</p>
         </div>
 
     </div>
@@ -589,50 +465,13 @@
         }
 
         initHotelMap();
-
-        const ctx = document.getElementById('strategyChart').getContext('2d');
-        const strategyChart = new Chart(ctx, {
-            type: 'scatter',
-            data: {
-                datasets: [{
-                    label: '商務旅館開發區域',
-                    data: [{x: 9, y: 3}, {x: 8, y: 4}, {x: 9.5, y: 2}],
-                    backgroundColor: 'rgba(52, 152, 219, 0.8)',
-                    pointRadius: 10
-                },
-                {
-                    label: '一般旅館開發區域',
-                    data: [{x: 4, y: 9}, {x: 3, y: 8.5}, {x: 5, y: 8}],
-                    backgroundColor: 'rgba(200, 169, 126, 0.8)',
-                    pointRadius: 12
-                }]
-            },
-            options: {
-                scales: {
-                    x: {
-                        title: { display: true, text: '依賴現有生活機能 (車站/商圈)' },
-                        min: 0, max: 10
-                    },
-                    y: {
-                        title: { display: true, text: '注重土地未來潛力 (都更/腹地)' },
-                        min: 0, max: 10
-                    }
-                },
-                plugins: {
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return context.dataset.label;
-                            }
-                        }
-                    }
-                }
-            }
-        });
     </script>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
+
+
 
 
