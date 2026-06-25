@@ -1,0 +1,638 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>東京中央區：不動產與飯店開發潛力分析報告</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIINfQkVZhDdmwS8R4pDlykgQ0dQ4Xf5tD0=" crossorigin="">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, 'Noto Sans TC', '微軟正黑體', sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+        }
+        .header-banner {
+            background-color: #1a2b4c;
+            color: #fff;
+            padding: 50px 0;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        .section-title {
+            color: #1a2b4c;
+            border-left: 5px solid #c8a97e;
+            padding-left: 15px;
+            margin-top: 40px;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+        .table th {
+            background-color: #f8f9fa;
+            color: #1a2b4c;
+        }
+        .highlight-box {
+            background-color: #eef2f5;
+            border-radius: 8px;
+            padding: 20px;
+            border-left: 4px solid #1a2b4c;
+        }
+        .badge-luxury {
+            background-color: #c8a97e;
+            color: white;
+        }
+        .badge-business {
+            background-color: #3498db;
+            color: white;
+        }
+
+        /* Leaflet fallback: keep map layout correct even when external Leaflet CSS is blocked on file:// pages. */
+        .leaflet-container {
+            position: relative;
+            overflow: hidden;
+            outline-offset: 1px;
+            font: 12px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
+            background: #ddd;
+        }
+        .leaflet-pane,
+        .leaflet-tile,
+        .leaflet-marker-icon,
+        .leaflet-marker-shadow,
+        .leaflet-tile-container,
+        .leaflet-pane > svg,
+        .leaflet-pane > canvas,
+        .leaflet-zoom-box,
+        .leaflet-image-layer,
+        .leaflet-layer {
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        .leaflet-tile,
+        .leaflet-marker-icon,
+        .leaflet-marker-shadow {
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+        .leaflet-tile {
+            width: 256px;
+            height: 256px;
+            border: 0;
+            visibility: inherit;
+        }
+        .leaflet-container img.leaflet-tile,
+        .leaflet-container .leaflet-marker-icon,
+        .leaflet-container .leaflet-marker-shadow {
+            max-width: none !important;
+            max-height: none !important;
+        }
+        .leaflet-map-pane,
+        .leaflet-tile-pane,
+        .leaflet-overlay-pane,
+        .leaflet-shadow-pane,
+        .leaflet-marker-pane,
+        .leaflet-tooltip-pane,
+        .leaflet-popup-pane {
+            z-index: 200;
+        }
+        .leaflet-tile-pane { z-index: 200; }
+        .leaflet-overlay-pane { z-index: 400; }
+        .leaflet-shadow-pane { z-index: 500; }
+        .leaflet-marker-pane { z-index: 600; }
+        .leaflet-tooltip-pane { z-index: 650; }
+        .leaflet-popup-pane { z-index: 700; }
+        .leaflet-control {
+            position: relative;
+            z-index: 800;
+            pointer-events: auto;
+            float: left;
+            clear: both;
+        }
+        .leaflet-top,
+        .leaflet-bottom {
+            position: absolute;
+            z-index: 1000;
+            pointer-events: none;
+        }
+        .leaflet-top { top: 0; }
+        .leaflet-right { right: 0; }
+        .leaflet-bottom { bottom: 0; }
+        .leaflet-left { left: 0; }
+        .leaflet-control-zoom a {
+            display: block;
+            width: 26px;
+            height: 26px;
+            line-height: 26px;
+            text-align: center;
+            text-decoration: none;
+            background: #fff;
+            color: #1a2b4c;
+            border-bottom: 1px solid #ccc;
+        }
+        .leaflet-control-attribution {
+            background: rgba(255,255,255,0.82);
+            padding: 0 5px;
+            font-size: 11px;
+        }
+        .hotel-map-card {
+            min-height: 0;
+        }
+        .map-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+        .map-header h5 {
+            color: #1a2b4c;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .map-filter {
+            flex: 0 0 auto;
+        }
+        .map-filter .btn {
+            white-space: nowrap;
+        }
+        #hotelMap {
+            width: 100%;
+            height: 430px;
+            min-height: 430px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #e4e8ee;
+            background: #eef2f5;
+        }
+        #hotelMap .leaflet-container,
+        #hotelMap .leaflet-pane,
+        #hotelMap .leaflet-map-pane,
+        #hotelMap .leaflet-tile-pane,
+        #hotelMap .leaflet-overlay-pane,
+        #hotelMap .leaflet-marker-pane,
+        #hotelMap .leaflet-shadow-pane,
+        #hotelMap .leaflet-popup-pane {
+            max-width: none;
+        }
+        #hotelMap .leaflet-tile {
+            max-width: none !important;
+        }
+        .hotel-pin-icon {
+            background: transparent;
+            border: 0;
+        }
+        .hotel-pin {
+            width: 18px;
+            height: 18px;
+            display: block;
+            border-radius: 50% 50% 50% 0;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 7px rgba(0,0,0,0.35);
+            transform: rotate(-45deg);
+        }
+        .hotel-pin::after {
+            content: "";
+            width: 6px;
+            height: 6px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 50%;
+            position: absolute;
+            left: 4px;
+            top: 4px;
+        }
+        .hotel-pin.business {
+            background: #3498db;
+        }
+        .hotel-pin.general {
+            background: #c8a97e;
+        }
+        .map-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 10px;
+            color: #5d6470;
+            font-size: 0.9rem;
+        }
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            display: inline-block;
+            border-radius: 50%;
+            margin-right: 6px;
+            vertical-align: -1px;
+        }
+        .legend-dot.business {
+            background: #3498db;
+        }
+        .legend-dot.general {
+            background: #c8a97e;
+        }
+        .hotel-popup strong {
+            color: #1a2b4c;
+        }
+        @media (max-width: 991.98px) {
+            .map-header {
+                flex-direction: column;
+            }
+            #hotelMap {
+                height: 420px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header-banner">
+        <div class="container">
+            <h1 class="display-5 fw-bold">東京中央區旅館開發策略分析報告</h1>
+            <p class="lead mt-3">2024-2025 年度趨勢：生活機能 VS. 土地潛力之深度探討</p>
+        </div>
+    </header>
+
+    <div class="container">
+        
+        <h2 class="section-title">一、 區域現況：飯店總量與地理分布</h2>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card p-4 h-100">
+                    <h4>1. 中央區住宿設施概況</h4>
+                    <p>根據目前市場與公開數據評估，中央區約有 <strong>250～300 間</strong> 登記住宿設施。隨著疫情後訪日外國遊客（Inbound）的強勢回歸，2024 至 2025 年間的客房稼働率已穩定回升，並呈現供不應求的趨勢。</p>
+                    
+                    <h4 class="mt-4">2. 立地條件與開發驅動力</h4>
+                    <div class="highlight-box mt-3">
+                        <strong>先有雞（看重現有生活機能）：銀座、日本橋</strong><br>
+                        這裡具備頂級商業設施與極致的交通便利性。在此區開發的邏輯是直接吸收現有龐大的消費人流。
+                    </div>
+                    <div class="highlight-box mt-3">
+                        <strong>先有蛋（看重土地潛在價值）：築地、八重洲周邊</strong><br>
+                        受惠於築地市場搬遷後的廣大腹地及八重洲的大型都市更新，此區開發注重未來的資產增值（Capital Gain），以飯店帶動周邊區域發展。
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card p-3 hotel-map-card">
+                    <div class="map-header">
+                        <div>
+                            <h5>中央區旅館分布圖</h5>
+                            <div id="mapSummary" class="text-muted small">全部 243 家旅館</div>
+                        </div>
+                        <div class="btn-group btn-group-sm map-filter" role="group" aria-label="旅館分類篩選">
+                            <button type="button" class="btn btn-outline-secondary active" data-map-filter="all">全部 243</button>
+                            <button type="button" class="btn btn-outline-primary" data-map-filter="business">商務 74</button>
+                            <button type="button" class="btn btn-outline-secondary" data-map-filter="general">一般 169</button>
+                        </div>
+                    </div>
+                    <div id="hotelMap" aria-label="東京都中央區旅館座標地圖"></div>
+                    <div class="map-legend">
+                        <span><i class="legend-dot business"></i>商務旅館</span>
+                        <span><i class="legend-dot general"></i>一般旅館</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">二、 分類基準與市場定位</h2>
+        <div class="card p-4">
+            <p>根據觀光廳的統計邏輯，為精確評估投資報酬率與建造成本，我們將設施以「客房規模」與「服務型態」進行兩大分類：</p>
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <h5>🏛️ 一般旅館 (Full-service / Luxury)</h5>
+                    <p class="text-muted">這類旅館主主打高附加價值、品牌溢價與高端設施（客房數通常較多或主打極致精品）。</p>
+                </div>
+                <div class="col-md-6">
+                    <h5>🏨 商務旅館 (Business Hotel)</h5>
+                    <p class="text-muted">這類旅館主打住宿特化、高坪效、交通極度便利，以及高周轉率。</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">三、 中央區指標性旅館 Top 10 比較表</h2>
+        
+        <div class="card p-4">
+            <h5 class="mb-3 d-flex align-items-center">
+                <span class="badge badge-luxury me-2">🏛️ 一般旅館</span> Full-service / Luxury Top 10
+            </h5>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th style="width: 8%;">排名</th>
+                            <th style="width: 30%;">旅館名稱</th>
+                            <th style="width: 15%;">坐落區域</th>
+                            <th style="width: 47%;">市場定位與優勢說明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td class="fw-bold">東京文華東方酒店 <br><small class="text-muted">Mandarin Oriental, Tokyo</small></td>
+                            <td>日本橋</td>
+                            <td>坐擁金融街頂級客層，ADR（平均客房收益）極高。</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td class="fw-bold">東京康萊德酒店 <br><small class="text-muted">Conrad Tokyo</small></td>
+                            <td>汐留/銀座邊界</td>
+                            <td>深受歐美外國旅客喜愛。</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td class="fw-bold">東京寶格麗飯店 <br><small class="text-muted">Bulgari Hotel Tokyo</small></td>
+                            <td>八重洲</td>
+                            <td>近年新開幕，主打極致奢華，代表土地開發的新潛力。</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td class="fw-bold">銀座 AC 酒店 <br><small class="text-muted">AC Hotel by Marriott Tokyo Ginza</small></td>
+                            <td>銀座</td>
+                            <td>外資品牌進駐精華商圈的代表。</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td class="fw-bold">三井花園飯店銀座普米爾 <br><small class="text-muted">Mitsui Garden Hotel Ginza Premier</small></td>
+                            <td>銀座</td>
+                            <td>高級精品型，景觀與評價極佳。</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td class="fw-bold">東京千禧三井花園飯店 <br><small class="text-muted">Millennium Mitsui Garden Hotel Tokyo</small></td>
+                            <td>銀座</td>
+                            <td>地理位置絕佳（銀座正中心），深受海外高端散客喜愛。</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td class="fw-bold">皇家花園飯店 <br><small class="text-muted">Royal Park Hotel</small></td>
+                            <td>日本橋蠣殼町</td>
+                            <td>水天宮前站直結，中央區內少數具備大型宴會廳與多間高級餐廳的傳統全服務型大飯店。</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td class="fw-bold">東京銀座萬怡酒店 <br><small class="text-muted">Courtyard by Marriott Tokyo Ginza</small></td>
+                            <td>銀座</td>
+                            <td>萬豪集團的穩健品牌，商務與休閒客群通吃。</td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td class="fw-bold">銀座賽萊斯廷酒店 <br><small class="text-muted">Hotel The Celestine Ginza</small></td>
+                            <td>銀座</td>
+                            <td>三井不動產旗下的高端精品線，主打隱密性與專屬服務。</td>
+                        </tr>
+                        <tr>
+                            <td>10</td>
+                            <td class="fw-bold">濱町飯店 <br><small class="text-muted">Hamacho Hotel Tokyo</small></td>
+                            <td>日本橋濱町</td>
+                            <td>近年日本橋地區「社區營造（まちづくり）」的指標性設計飯店，帶動周邊土地質感提升。</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card p-4">
+            <h5 class="mb-3 d-flex align-items-center">
+                <span class="badge badge-business me-2">🏨 商務旅館</span> Business Hotel Top 10
+            </h5>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th style="width: 8%;">排名</th>
+                            <th style="width: 30%;">旅館名稱</th>
+                            <th style="width: 15%;">坐落區域</th>
+                            <th style="width: 47%;">市場定位與優勢說明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td class="fw-bold">APA Hotel 體系</td>
+                            <td>銀座/京橋一帶</td>
+                            <td>以極高的客房數量和定價靈活性佔據市場率。</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td class="fw-bold">多美迎 PREMIUM 銀座 <br><small class="text-muted">Dormy Inn Premium Ginza</small></td>
+                            <td>銀座</td>
+                            <td>附設天然溫泉，在旅客評價中長期霸榜。</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td class="fw-bold">相鐵 FRESA INN <br><small class="text-muted">Sotetsu Fresa Inn</small></td>
+                            <td>日本橋/銀座</td>
+                            <td>地點極佳，深受散客喜愛。</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td class="fw-bold">東橫 INN <br><small class="text-muted">Toyoko Inn</small></td>
+                            <td>東京站八重洲北口等</td>
+                            <td>國內商務客的絕對基石。</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td class="fw-bold">超級酒店 Premier <br><small class="text-muted">Super Hotel Premier</small></td>
+                            <td>銀座</td>
+                            <td>主打健康與環保概念，差異化經營成功。</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td class="fw-bold">銀座大和 ROYNET 飯店 <br><small class="text-muted">Daiwa Roynet Hotel Ginza</small></td>
+                            <td>銀座</td>
+                            <td>客房空間通常比一般商務旅館寬敞，深受帶行李箱的亞洲旅客歡迎。</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td class="fw-bold">銀座格拉斯麗飯店 <br><small class="text-muted">Hotel Gracery Ginza</small></td>
+                            <td>銀座</td>
+                            <td>藤田觀光集團旗下，衛浴獨立設計（浴廁分離）在同級距中極具競爭力。</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td class="fw-bold">雷姆東京京橋飯店 <br><small class="text-muted">remm Tokyo Kyobashi</small></td>
+                            <td>京橋</td>
+                            <td>阪急阪神集團旗下，主打「優質睡眠」特化，客房全配備按摩椅，定位精準。</td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td class="fw-bold">京王布萊索酒店 茅場町 <br><small class="text-muted">Keio Presso Inn Kayabacho</small></td>
+                            <td>日本橋茅場町</td>
+                            <td>房價具競爭力且附贈早餐，是國內出差員工的性價比首選。</td>
+                        </tr>
+                        <tr>
+                            <td>10</td>
+                            <td class="fw-bold">VIA INN 東銀座 <br><small class="text-muted">Via Inn Higashi Ginza</small></td>
+                            <td>築地/東銀座</td>
+                            <td>JR 西日本集團經營，位置鄰近築地，能同時吸納商務與早起觀光的客群。</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <h2 class="section-title">四、 統整與結論分析</h2>
+        <div class="row mb-5">
+            <div class="col-lg-7">
+                <div class="card p-4 h-100">
+                    <h4>給決策層的最終建議</h4>
+                    <p>受惠於日圓貶值，2024-2025 年訪日消費額創下新高。在東京中央區買地蓋飯店，「看重生活機能」與「看重土地潛力」的策略應與<strong>旅館定位</strong>直接掛鉤：</p>
+                    <ul class="mt-3">
+                        <li class="mb-3"><strong>策略一：找雞策略 (商務旅館)</strong><br>
+                            若鎖定商務與預算型遊客，應選擇現有交通節點（車站徒步5分鐘內）的零碎土地。此客群重視<strong>現有生活機能與交通</strong>，開發風險低且現金流回收快。
+                        </li>
+                        <li><strong>策略二：養蛋策略 (一般旅館)</strong><br>
+                            若鎖定富裕層，應選擇如築地、八重洲等具備大型都更題材的區域。高消費客群重視品牌體驗，飯店本身即能帶動區域質感，適合賺取長期的<strong>土地資本利得 (Capital Gain)</strong>。
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="card p-4 h-100 d-flex flex-column justify-content-center align-items-center">
+                    <h5 class="text-center mb-4">中央區飯店開發：機能與潛力決策矩陣</h5>
+                    <canvas id="strategyChart" width="400" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+
+        const HOTEL_MARKERS = [{"no":1,"name":"三井ガーデンホテル京橋","address":"東京都中央区京橋1-3-6","town":"京橋","zone":"京橋・八重洲","marketGroup":"一般／觀光型","marketType":"general","lat":35.678425,"lng":139.770966,"matchedAddress":"東京都中央区京橋一丁目３番６号"},{"no":2,"name":"京王プレッソイン東京駅八重洲","address":"東京都中央区京橋1-4-1","town":"京橋","zone":"京橋・八重洲","marketGroup":"商務型","marketType":"business","lat":35.678909,"lng":139.769989,"matchedAddress":"東京都中央区京橋一丁目４番１号"},{"no":3,"name":"コートヤード・バイ・マリオット　東京ステーション","address":"東京都中央区京橋2-1-3","town":"京橋","zone":"京橋・八重洲","marketGroup":"一般／觀光型","marketType":"general","lat":35.678097,"lng":139.769852,"matchedAddress":"東京都中央区京橋二丁目１番３号"},{"no":4,"name":"lyf Ginza Tokyo","address":"東京都中央区京橋2-5-4","town":"京橋","zone":"京橋・八重洲","marketGroup":"一般／觀光型","marketType":"general","lat":35.676426,"lng":139.770706,"matchedAddress":"東京都中央区京橋二丁目５番４号"},{"no":5,"name":"レム東京京橋","address":"東京都中央区京橋2-6-21","town":"京橋","zone":"京橋・八重洲","marketGroup":"商務型","marketType":"business","lat":35.676884,"lng":139.77034,"matchedAddress":"東京都中央区京橋二丁目６番２１号"},{"no":6,"name":"ダイワロイネットホテル東京京橋　ＰＲＥＭＩＥＲ","address":"東京都中央区京橋2-8-20","town":"京橋","zone":"京橋・八重洲","marketGroup":"商務型","marketType":"business","lat":35.67741,"lng":139.770676,"matchedAddress":"東京都中央区京橋二丁目８番２０号"},{"no":7,"name":"相鉄フレッサイン東京京橋","address":"東京都中央区京橋2-11-1","town":"京橋","zone":"京橋・八重洲","marketGroup":"商務型","marketType":"business","lat":35.676491,"lng":139.77182,"matchedAddress":"東京都中央区京橋二丁目１１番１号"},{"no":8,"name":"ホテルインターゲート東京京橋","address":"東京都中央区京橋3-7-8","town":"京橋","zone":"京橋・八重洲","marketGroup":"一般／觀光型","marketType":"general","lat":35.675568,"lng":139.770905,"matchedAddress":"東京都中央区京橋三丁目７番８号"},{"no":9,"name":"ＨＯＴＥＬ　ＳＵＩ　ＧＩＮＺＡ　ＫＹＯＢＡＳＨＩ　ｂｙ　ＡＢＥＳＴ","address":"東京都中央区京橋3-9-1","town":"京橋","zone":"京橋・八重洲","marketGroup":"一般／觀光型","marketType":"general","lat":35.675117,"lng":139.77095,"matchedAddress":"東京都中央区京橋三丁目９番１号"},{"no":10,"name":"アパホテル〈銀座京橋南〉","address":"東京都中央区京橋3-11-2","town":"京橋","zone":"京橋・八重洲","marketGroup":"商務型","marketType":"business","lat":35.674404,"lng":139.77179,"matchedAddress":"東京都中央区京橋三丁目１１番２号"},{"no":11,"name":"ふふ 東京 銀座","address":"東京都中央区銀座1-7-10","town":"銀座","zone":"銀座","marketGroup":"一般／觀光型","marketType":"general","lat":35.674015,"lng":139.767761,"matchedAddress":"東京都中央区銀座一丁目７番１０号"},{"no":12,"name":"ＫＯＫＯ　ＨＯＴＥＬ銀座一丁目","address":"東京都中央区銀座1-9-5","town":"銀座","zone":"銀座","marketGroup":"一般／觀光型","marketType":"general","lat":35.674061,"lng":139.769196,"matchedAddress":"東京都中央区銀座一丁目９番５号"},{"no":13,"name":"ホテルモントレラ・スールギンザ","address":"東京都中央区銀座1-10-18","town":"銀座","zone":"銀座","marketGroup":"一般／觀光型","marketType":"general","lat":35.674015,"lng":139.769318,"matchedAddress":"東京都中央区銀座一丁目１０番１８号"},{"no":14,"name":"ダイワロイネットホテル銀座　ＰＲＥＭＩＥＲ","address":"東京都中央区銀座1-13-15","town":"銀座","zone":"銀座","marketGroup":"商務型","marketType":"business","lat":35.673431,"lng":139.769135,"matchedAddress":"東京都中央区銀座一丁目１３番１５号"},{"no":15,"name":"ホテルサンルート銀座","address":"東京都中央区銀座1-15-11","town":"銀座","zone":"銀座","marketGroup":"商務型","marketType":"business","lat":35.673573,"lng":139.76976,"matchedAddress":"東京都中央区銀座一丁目１５番１１号"},{"no":16,"name":"東京エディション銀座","address":"東京都中央区銀座2-8-13","town":"銀座","zone":"銀座","marketGroup":"一般／觀光型","marketType":"general","lat":35.672592,"lng":139.767471,"matchedAddress":"東京都中央区銀座二丁目８番１３号"},{"no":17,"name":"ホテルモントレ銀座","address":"東京都中央区銀座2-10-2","town":"銀座","zone":"銀座","marketGroup":"一般／觀光型","marketType":"general","lat":35.672916,"lng":139.768997,"matchedAddress":"東京都中央区銀座二丁目１０番２号"},{"no":18,"name":"ザ・スクエアホテル銀座","address":"東京都中央区銀座2-11-6","town":"銀座","zone":"銀座","marketGroup":"一般／觀光型","marketType":"general","lat":35.67223,"lng":139.769135,"matchedAddress":"東京都中央区銀座二丁目１１番６号"},{"no":19,"name":"浪 ＬＡＮＧ","address":"東京都中央区銀座2-12-4","town":"銀座","zone":"銀座","marketGroup":"一般／觀光型","marketType":"general","lat":35.672009,"lng":139.769989,"matchedAddress":"東京都中央区銀座二丁目１２番４号"},{"no":20,"name":"MUJI HOTEL GINZA","address":"東京都中央区銀座3-3-5","town":"銀座","zone":"銀座","marketGroup":"一般／觀光型","marketType":"general","lat":35.673199,"lng":139.765732,"matchedAddress":"東京都中央区銀座三丁目３番５号"},{"no":21,"name":"相鉄フレッサイン銀座三丁目","address":"東京都中央区銀座3-8-4","town":"銀座","zone":"銀座","marketGroup":"商務型","marketType":"business","lat":35.671829,"lng":139.767715,"matchedAddress":"東京都中央区銀座三丁目８番４号"},{"no":22,"name":"スーパーホテルＰｒｅｍｉｅｒ銀座","address":"東京都中央区銀座3-11-15","town":"銀座","zone":"銀座","marketGroup":"商務型","marketType":"business","lat":35.670792,"lng":139.768448,"matchedAddress":"東京都中央区銀座三丁目１１番１５号"},{"no":23,"name":"ホテル銀座ダイエー","address":"東京都中央区銀座3-12-2","town":"銀座","zone":"銀座","marketGroup":"一般／觀光型","marketType":"general","lat":35.671047,"lng":139.769501,"matchedAddress":"東京都中央区銀座三丁目１２番２号"},{"no":24,"name":"ラネクス","address":"東京都中央区銀座3-13-20","town":"銀座","zone":"銀座","marketGroup":"一般／觀光型","marketType":"general","lat":35.670906,"lng":139.769562,"matchedAddress":"東京都中央区銀座三丁目１３番２０号"},{"no":25,"name":"ENT　TERRACE　GINZA　PREMIUM","address":"東京都中央区銀座3-14-6","town":"銀座","zone":"銀座","marketGroup":"一般／觀光型","marketType":"general","lat":35.670219,"lng":139.769791,"matchedAddress":"東京都中央区銀座三丁目１４番６号"},{"no":26,"name":"ソラリア西鉄ホテル銀座","address":"東京都中央区銀座4-9-2","town":"銀座","zone":"銀座","marketGroup":"一般／觀光型","marketType":"general","lat":35.670933,"lng":139.76738,"matchedAddress":"東京都中央区銀座四丁目９番２号"},{"no":27,"name":"東急ステイ銀座","address":"東京都中央区銀座4-10-5","town":"銀座","zone":"銀座","marketGroup":"商務型","marketType":"business","lat":35.670311,"lng":139.76741,"matchedAddress":"東京都中央区銀座四丁目１０番５号"},{"no":28,"name":"クインテッサホテル東京銀座","address":"東京都中央区銀座4-11-4","town":"銀座","zone":"銀座","marketGroup":"一般／觀光型","marketType":"general","lat":35.670113,"lng":139.768539,"matchedAddress":"東京都中央区銀座四丁目１１番４号"},{"no":29,"name":"ミレニアム　三井ガーデンホテル　東京","address":"東京都中央区銀座5-11-1","town":"銀座","zone":"銀座","marketGroup":"一般／觀光型","marketType":"general","lat":35.669979,"lng":139.766083,"matchedAddress":"東京都中央区銀座五丁目１１番１号"},{"no":30,"name":"ホテルグランバッハ東京銀座","address":"東京都中央区銀座5-13-12","town":"銀座","zone":"銀座","marketGroup":"一般／觀光型","marketType":"general","lat":35.668587,"lng":139.766373,"matchedAddress":"東京都中央区銀座五丁目１３番１２号"},{"no":31,"name":"三井ガーデンホテル銀座五丁目","address":"東京都中央区銀座5-13-15","town":"銀座","zone":"銀座","marketGroup":"一般／觀光型","marketType":"general","lat":35.668896,"lng":139.766571,"matchedAddress":"東京都中央区銀座五丁目１３番１５号"},{"no":32,"name":"アゴーラ 東京銀座","address":"東京都中央区銀座5-14-7","town":"銀座","zone":"銀座","marketGroup":"一般／觀光型","marketType":"general","lat":35.668457,"lng":139.76712,"matchedAddress":"東京都中央区銀座五丁目１４番７号"},{"no":33,"name":"ザ　ロイヤルパーク　キャンバス　銀座コリドー","address":"東京都中央区銀座6-2-11","town":"銀座","zone":"銀座","marketGroup":"一般／觀光型","marketType":"general","lat":35.671394,"lng":139.760437,"matchedAddress":"東京都中央区銀座六丁目２番１１号"},{"no":34,"name":"銀座ベルビューホテル","address":"東京都中央区銀座6-4-14","town":"銀座","zone":"銀座","marketGroup":"一般／觀光型","marketType":"general","lat":35.671177,"lng":139.761139,"matchedAddress":"東京都中央区銀座六丁目４番１４号"},{"no":35,"name":"ハイアット セントリック 銀座 東京","address":"東京都中央区銀座6-6-7","town":"銀座","zone":"銀座","marketGroup":"一般／觀光型","marketType":"general","lat":35.670647,"lng":139.762314,"matchedAddress":"東京都中央区銀座六丁目６番７号"},{"no":36,"name":"アロフト東京銀座","address":"東京都中央区銀座6-14-3","town":"銀座","zone":"銀座","marketGroup":"一般／觀光型","marketType":"general","lat":35.668915,"lng":139.765808,"matchedAddress":"東京都中央区銀座六丁目１４番３号"},{"no":37,"name":"ＡＣホテル・バイ・マリオット東京銀座","address":"東京都中央区銀座6-14-7","town":"銀座","zone":"銀座","marketGroup":"一般／觀光型","marketType":"general","lat":35.668545,"lng":139.765457,"matchedAddress":"東京都中央区銀座六丁目１４番７号"},{"no":38,"name":"コートヤード・マリオット銀座東武ホテル","address":"東京都中央区銀座6-14-10","town":"銀座","zone":"銀座","marketGroup":"一般／觀光型","marketType":"general","lat":35.668236,"lng":139.765076,"matchedAddress":"東京都中央区銀座六丁目１４番１０号"},{"no":39,"name":"ドーミーインPREMIUM銀座","address":"東京都中央区銀座6-16-8","town":"銀座","zone":"銀座","marketGroup":"商務型","marketType":"business","lat":35.667511,"lng":139.765762,"matchedAddress":"東京都中央区銀座六丁目１６番８号"},{"no":40,"name":"ザ　ロイヤルパークホテル　銀座６丁目","address":"東京都中央区銀座6-16-14","town":"銀座","zone":"銀座","marketGroup":"一般／觀光型","marketType":"general","lat":35.668129,"lng":139.76564,"matchedAddress":"東京都中央区銀座六丁目１６番１４号"},{"no":41,"name":"GINZA HOTEL by GRANBELL","address":"東京都中央区銀座7-2-18","town":"銀座","zone":"銀座","marketGroup":"一般／觀光型","marketType":"general","lat":35.670753,"lng":139.759979,"matchedAddress":"東京都中央区銀座七丁目２番１８号"},{"no":42,"name":"ホテルグレイスリー銀座","address":"東京都中央区銀座7-10-1","town":"銀座","zone":"銀座","marketGroup":"一般／觀光型","marketType":"general","lat":35.668995,"lng":139.763626,"matchedAddress":"東京都中央区銀座七丁目１０番１号"},{"no":43,"name":"イビススタイルズ東京銀座","address":"東京都中央区銀座7-10-9","town":"銀座","zone":"銀座","marketGroup":"商務型","marketType":"business","lat":35.668224,"lng":139.763062,"matchedAddress":"東京都中央区銀座七丁目１０番９号"},{"no":44,"name":"相鉄フレッサイン　銀座七丁目","address":"東京都中央区銀座7-11-12","town":"銀座","zone":"銀座","marketGroup":"商務型","marketType":"business","lat":35.668179,"lng":139.763214,"matchedAddress":"東京都中央区銀座七丁目１１番１２号"},{"no":45,"name":"ホテルミュッセ銀座名鉄","address":"東京都中央区銀座7-12-9","town":"銀座","zone":"銀座","marketGroup":"一般／觀光型","marketType":"general","lat":35.667812,"lng":139.763611,"matchedAddress":"東京都中央区銀座七丁目１２番９号"},{"no":46,"name":"Tabist 銀座","address":"東京都中央区銀座7-17-7","town":"銀座","zone":"銀座","marketGroup":"一般／觀光型","marketType":"general","lat":35.666267,"lng":139.76622,"matchedAddress":"東京都中央区銀座七丁目１７番７号"},{"no":47,"name":"住友商事グローバル人材開発センター","address":"東京都中央区銀座7-17-16","town":"銀座","zone":"銀座","marketGroup":"一般／觀光型","marketType":"general","lat":35.666523,"lng":139.7659,"matchedAddress":"東京都中央区銀座七丁目１７番１６号"},{"no":48,"name":"ホテル　ザ　セレスティン銀座","address":"東京都中央区銀座8-4-22","town":"銀座","zone":"銀座","marketGroup":"一般／觀光型","marketType":"general","lat":35.669125,"lng":139.759827,"matchedAddress":"東京都中央区銀座八丁目４番２２号"},{"no":49,"name":"銀座グランドホテル","address":"東京都中央区銀座8-6-15","town":"銀座","zone":"銀座","marketGroup":"一般／觀光型","marketType":"general","lat":35.668198,"lng":139.759949,"matchedAddress":"東京都中央区銀座八丁目６番１５号"},{"no":50,"name":"銀座国際ホテル","address":"東京都中央区銀座8-7-13","town":"銀座","zone":"銀座","marketGroup":"一般／觀光型","marketType":"general","lat":35.667957,"lng":139.760437,"matchedAddress":"東京都中央区銀座八丁目７番１３号"},{"no":51,"name":"ザ ロイヤルパークキャンバス銀座８","address":"東京都中央区銀座8-9-4","town":"銀座","zone":"銀座","marketGroup":"一般／觀光型","marketType":"general","lat":35.668087,"lng":139.762329,"matchedAddress":"東京都中央区銀座八丁目９番４号"},{"no":52,"name":"レムプラス銀座","address":"東京都中央区銀座8-11-11","town":"銀座","zone":"銀座","marketGroup":"商務型","marketType":"business","lat":35.667637,"lng":139.762497,"matchedAddress":"東京都中央区銀座八丁目１１番１１号"},{"no":53,"name":"the b 銀座","address":"東京都中央区銀座8-12-13","town":"銀座","zone":"銀座","marketGroup":"商務型","marketType":"business","lat":35.667446,"lng":139.762711,"matchedAddress":"東京都中央区銀座八丁目１２番１３号"},{"no":54,"name":"三井ガーデンホテル銀座プレミア","address":"東京都中央区銀座8-13-1","town":"銀座","zone":"銀座","marketGroup":"一般／觀光型","marketType":"general","lat":35.667496,"lng":139.763458,"matchedAddress":"東京都中央区銀座八丁目１３番１号"},{"no":55,"name":"Ginza　Stay　Hotel","address":"東京都中央区月島2-7-12","town":"月島","zone":"月島・灣岸","marketGroup":"一般／觀光型","marketType":"general","lat":35.662956,"lng":139.784088,"matchedAddress":"東京都中央区月島二丁目７番１２号"},{"no":56,"name":"Live　Ginza","address":"東京都中央区月島3-14-4","town":"月島","zone":"月島・灣岸","marketGroup":"一般／觀光型","marketType":"general","lat":35.661625,"lng":139.78064,"matchedAddress":"東京都中央区月島三丁目１４番４号"},{"no":57,"name":"東京ビュック中銀","address":"東京都中央区勝どき2-8-12","town":"勝どき","zone":"月島・灣岸","marketGroup":"一般／觀光型","marketType":"general","lat":35.65876,"lng":139.778427,"matchedAddress":"東京都中央区勝どき二丁目８番１２号"},{"no":58,"name":"THE TOKYO TOWERS","address":"東京都中央区勝どき6-3-2","town":"勝どき","zone":"月島・灣岸","marketGroup":"一般／觀光型","marketType":"general","lat":35.656155,"lng":139.773788,"matchedAddress":"東京都中央区勝どき六丁目３番２号"},{"no":59,"name":"パールホテル茅場町","address":"東京都中央区新川1-2-5","town":"新川","zone":"八丁堀・新川","marketGroup":"商務型","marketType":"business","lat":35.679016,"lng":139.782944,"matchedAddress":"東京都中央区新川一丁目２番５号"},{"no":60,"name":"ホテル　ヴィラフォンテーヌ東京茅場町","address":"東京都中央区新川1-8-2","town":"新川","zone":"八丁堀・新川","marketGroup":"商務型","marketType":"business","lat":35.678337,"lng":139.782669,"matchedAddress":"東京都中央区新川一丁目８番２号"},{"no":61,"name":"ホテル　ヴィラフォンテーヌ東京茅場町アネックス","address":"東京都中央区新川1-8-23","town":"新川","zone":"八丁堀・新川","marketGroup":"商務型","marketType":"business","lat":35.678207,"lng":139.782089,"matchedAddress":"東京都中央区新川一丁目８番２３号"},{"no":62,"name":"サクラクロスホテル　東京茅場町","address":"東京都中央区新川1-14-13","town":"新川","zone":"八丁堀・新川","marketGroup":"一般／觀光型","marketType":"general","lat":35.676609,"lng":139.782669,"matchedAddress":"東京都中央区新川一丁目１４番１３号"},{"no":63,"name":"nestay apartment tokyo ginza","address":"東京都中央区新川2-16-4","town":"新川","zone":"八丁堀・新川","marketGroup":"一般／觀光型","marketType":"general","lat":35.674999,"lng":139.782806,"matchedAddress":"東京都中央区新川二丁目１６番４号"},{"no":64,"name":"ドーミーイン東京八丁堀","address":"東京都中央区新川2-20-4","town":"新川","zone":"八丁堀・新川","marketGroup":"商務型","marketType":"business","lat":35.674431,"lng":139.780914,"matchedAddress":"東京都中央区新川二丁目２０番４号"},{"no":65,"name":"イビススタイルズ東京銀座East","address":"東京都中央区新富1-2-13","town":"新富","zone":"築地・新富","marketGroup":"商務型","marketType":"business","lat":35.673576,"lng":139.773315,"matchedAddress":"東京都中央区新富一丁目２番１３号"},{"no":66,"name":"ＨＩＺ　ＨＯＴＥＬ　銀座東","address":"東京都中央区新富1-3-3","town":"新富","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.673485,"lng":139.77356,"matchedAddress":"東京都中央区新富一丁目３番３号"},{"no":67,"name":"ＭＩＭＡＲＵ東京銀座ＥＡＳＴ","address":"東京都中央区新富1-4-4","town":"新富","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.672947,"lng":139.772919,"matchedAddress":"東京都中央区新富一丁目４番４号"},{"no":68,"name":"ＴＯＭＩ.","address":"東京都中央区新富1-5-10","town":"新富","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.672245,"lng":139.772903,"matchedAddress":"東京都中央区新富一丁目５番１０号"},{"no":69,"name":"ＨＯＴＥＬ　ＬｉＶＥＭＡＸ　東京新富町","address":"東京都中央区新富1-7-12","town":"新富","zone":"築地・新富","marketGroup":"商務型","marketType":"business","lat":35.672295,"lng":139.773483,"matchedAddress":"東京都中央区新富一丁目７番１２号"},{"no":70,"name":"アパホテル＜銀座 新富町駅前北＞","address":"東京都中央区新富1-12-11","town":"新富","zone":"築地・新富","marketGroup":"商務型","marketType":"business","lat":35.673222,"lng":139.774277,"matchedAddress":"東京都中央区新富一丁目１２番１１号"},{"no":71,"name":"Section　L　Ginza　East","address":"東京都中央区新富1-14-5","town":"新富","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.673294,"lng":139.775635,"matchedAddress":"東京都中央区新富一丁目１４番５号"},{"no":72,"name":"アパホテル〈八丁堀駅南〉","address":"東京都中央区新富1-14-7","town":"新富","zone":"築地・新富","marketGroup":"商務型","marketType":"business","lat":35.673088,"lng":139.775528,"matchedAddress":"東京都中央区新富一丁目１４番７号"},{"no":73,"name":"ELE　hotel　Ginza　East","address":"東京都中央区新富1-15-10","town":"新富","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.672279,"lng":139.77504,"matchedAddress":"東京都中央区新富一丁目１５番１０号"},{"no":74,"name":"アパホテル〈八丁堀 新富町〉","address":"東京都中央区新富1-17-8","town":"新富","zone":"築地・新富","marketGroup":"商務型","marketType":"business","lat":35.671696,"lng":139.775162,"matchedAddress":"東京都中央区新富一丁目１７番８号"},{"no":75,"name":"Comfybed　Ginza","address":"東京都中央区新富2-2-2","town":"新富","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.672146,"lng":139.772873,"matchedAddress":"東京都中央区新富二丁目２番２号"},{"no":76,"name":"ホテル アマネク 銀座イースト","address":"東京都中央区新富2-4-13","town":"新富","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.671597,"lng":139.773178,"matchedAddress":"東京都中央区新富二丁目４番１３号"},{"no":77,"name":"アパホテル＜銀座 新富町駅前＞","address":"東京都中央区新富2-5-10","town":"新富","zone":"築地・新富","marketGroup":"商務型","marketType":"business","lat":35.671627,"lng":139.773651,"matchedAddress":"東京都中央区新富二丁目５番１０号"},{"no":78,"name":"プレミアホテル-CABIN PRESIDENT-東京","address":"東京都中央区晴海3-2-7","town":"晴海","zone":"月島・灣岸","marketGroup":"一般／觀光型","marketType":"general","lat":35.655521,"lng":139.781174,"matchedAddress":"東京都中央区晴海三丁目２番７号"},{"no":79,"name":"東京海員会館","address":"東京都中央区晴海3-7-1","town":"晴海","zone":"月島・灣岸","marketGroup":"一般／觀光型","marketType":"general","lat":35.655331,"lng":139.779388,"matchedAddress":"東京都中央区晴海三丁目７番１号"},{"no":80,"name":"L　ｓｔａｙ＆ｇｒｏｗ晴海","address":"東京都中央区晴海3-8-1","town":"晴海","zone":"月島・灣岸","marketGroup":"一般／觀光型","marketType":"general","lat":35.655037,"lng":139.779739,"matchedAddress":"東京都中央区晴海三丁目８番１号"},{"no":81,"name":"ホテルマリナーズコート東京","address":"東京都中央区晴海4-7-28","town":"晴海","zone":"月島・灣岸","marketGroup":"一般／觀光型","marketType":"general","lat":35.653156,"lng":139.779053,"matchedAddress":"東京都中央区晴海四丁目７番２８号"},{"no":82,"name":"nestay inn tokyo tsukiji","address":"東京都中央区築地1-4-7","town":"築地","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.669483,"lng":139.771988,"matchedAddress":"東京都中央区築地一丁目４番７号"},{"no":83,"name":"Bed & Breakfast RENGA","address":"東京都中央区築地1-5-1","town":"築地","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.670303,"lng":139.771805,"matchedAddress":"東京都中央区築地一丁目５番１号"},{"no":84,"name":"ＴＳＵＫＩ","address":"東京都中央区築地1-9-4","town":"築地","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.669201,"lng":139.771774,"matchedAddress":"東京都中央区築地一丁目９番４号"},{"no":85,"name":"一期一会　別館","address":"東京都中央区築地2-1-12","town":"築地","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.669891,"lng":139.773026,"matchedAddress":"東京都中央区築地二丁目１番１２号"},{"no":86,"name":"変なホテル東京　銀座","address":"東京都中央区築地2-2-1","town":"築地","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.670158,"lng":139.77388,"matchedAddress":"東京都中央区築地二丁目２番１号"},{"no":87,"name":"一期一会","address":"東京都中央区築地2-7-2","town":"築地","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.669872,"lng":139.772888,"matchedAddress":"東京都中央区築地二丁目７番２号"},{"no":88,"name":"WAYPOINT TSUKIJI TOKYO","address":"東京都中央区築地2-9-3","town":"築地","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.669109,"lng":139.772934,"matchedAddress":"東京都中央区築地二丁目９番３号"},{"no":89,"name":"ＨＯＴＥＬ　ＬｉＶＥＭＡＸ　東銀座","address":"東京都中央区築地2-12-1","town":"築地","zone":"築地・新富","marketGroup":"商務型","marketType":"business","lat":35.668545,"lng":139.771378,"matchedAddress":"東京都中央区築地二丁目１２番１号"},{"no":90,"name":"Tengcle STAY","address":"東京都中央区築地2-14-4","town":"築地","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.667572,"lng":139.770874,"matchedAddress":"東京都中央区築地二丁目１４番４号"},{"no":91,"name":"Tengcle Stay Ⅱ","address":"東京都中央区築地2-14-4","town":"築地","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.667572,"lng":139.770874,"matchedAddress":"東京都中央区築地二丁目１４番４号"},{"no":92,"name":"宿坊　銀杏","address":"東京都中央区築地2-15-4","town":"築地","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.667381,"lng":139.770645,"matchedAddress":"東京都中央区築地二丁目１５番４号"},{"no":93,"name":"ヴィアイン東銀座","address":"東京都中央区築地2-15-13","town":"築地","zone":"築地・新富","marketGroup":"商務型","marketType":"business","lat":35.666962,"lng":139.770401,"matchedAddress":"東京都中央区築地二丁目１５番１３号"},{"no":94,"name":"京急EXイン東銀座","address":"東京都中央区築地2-15-15","town":"築地","zone":"築地・新富","marketGroup":"商務型","marketType":"business","lat":35.667152,"lng":139.770172,"matchedAddress":"東京都中央区築地二丁目１５番１５号"},{"no":95,"name":"銀座キャピタルホテル茜","address":"東京都中央区築地3-1-5","town":"築地","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.669338,"lng":139.774963,"matchedAddress":"東京都中央区築地三丁目１番５号"},{"no":96,"name":"銀座キャピタルホテル萌木","address":"東京都中央区築地3-3-1","town":"築地","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.669247,"lng":139.774399,"matchedAddress":"東京都中央区築地三丁目３番１号"},{"no":97,"name":"ホテル京阪 築地銀座 グランデ","address":"東京都中央区築地3-5-4","town":"築地","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.668278,"lng":139.774551,"matchedAddress":"東京都中央区築地三丁目５番４号"},{"no":98,"name":"ホテル庵　築地","address":"東京都中央区築地3-10-4","town":"築地","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.667652,"lng":139.77301,"matchedAddress":"東京都中央区築地三丁目１０番４号"},{"no":99,"name":"ＢＡＮ ＨＯＴＥＬ 築地銀座","address":"東京都中央区築地3-17-10","town":"築地","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.665909,"lng":139.771515,"matchedAddress":"東京都中央区築地三丁目１７番１０号"},{"no":100,"name":"ホテルビスタ東京［築地］","address":"東京都中央区築地4-3-9","town":"築地","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.66674,"lng":139.768295,"matchedAddress":"東京都中央区築地四丁目３番９号"},{"no":101,"name":"三井ガーデンホテル銀座築地","address":"東京都中央区築地4-7-1","town":"築地","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.66716,"lng":139.769653,"matchedAddress":"東京都中央区築地四丁目７番１号"},{"no":102,"name":"東急ステイ築地","address":"東京都中央区築地4-11-5","town":"築地","zone":"築地・新富","marketGroup":"商務型","marketType":"business","lat":35.665718,"lng":139.770905,"matchedAddress":"東京都中央区築地四丁目１１番５号"},{"no":103,"name":"山はら旅館","address":"東京都中央区築地5-2-1","town":"築地","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.6633,"lng":139.768188,"matchedAddress":"東京都中央区築地五丁目２番"},{"no":104,"name":"Dash Living Tsukiji","address":"東京都中央区築地6-1-4","town":"築地","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.665882,"lng":139.772949,"matchedAddress":"東京都中央区築地六丁目１番４号"},{"no":105,"name":"９ＳＴＡＹ築地","address":"東京都中央区築地6-5-4","town":"築地","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.665054,"lng":139.773148,"matchedAddress":"東京都中央区築地六丁目５番４号"},{"no":106,"name":"Yama Hotel 築地","address":"東京都中央区築地6-6-7","town":"築地","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.665268,"lng":139.773346,"matchedAddress":"東京都中央区築地六丁目６番７号"},{"no":107,"name":"ＳＰＡＴＩＵＭ ＧＩＮＺＡ　ＰＯＮＹ","address":"東京都中央区築地6-6-11","town":"築地","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.665668,"lng":139.773483,"matchedAddress":"東京都中央区築地六丁目６番１１号"},{"no":108,"name":"ＫＯＫＯ ＨＯＴＥＬ築地 銀座","address":"東京都中央区築地6-8-8","town":"築地","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.664825,"lng":139.773087,"matchedAddress":"東京都中央区築地六丁目８番８号"},{"no":109,"name":"すずめや築地⁺kitchen","address":"東京都中央区築地6-13-5","town":"築地","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.664513,"lng":139.774429,"matchedAddress":"東京都中央区築地六丁目１３番５号"},{"no":110,"name":"すずめや築地東京","address":"東京都中央区築地6-21-1","town":"築地","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.664757,"lng":139.772232,"matchedAddress":"東京都中央区築地六丁目２１番１号"},{"no":111,"name":"トーセイホテル　ココネ築地銀座プレミア","address":"東京都中央区築地6-23-8","town":"築地","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.663944,"lng":139.771271,"matchedAddress":"東京都中央区築地六丁目２３番８号"},{"no":112,"name":"Ｓｅｃｔｉｏｎ　Ｌ　Ｔｓｕｋｉｊｉ","address":"東京都中央区築地6-26-5","town":"築地","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.664749,"lng":139.771484,"matchedAddress":"東京都中央区築地六丁目２６番５号"},{"no":113,"name":"大宗旅館","address":"東京都中央区築地7-10-5","town":"築地","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.666046,"lng":139.775284,"matchedAddress":"東京都中央区築地七丁目１０番５号"},{"no":114,"name":"アパホテル<築地駅南>","address":"東京都中央区築地7-10-11","town":"築地","zone":"築地・新富","marketGroup":"商務型","marketType":"business","lat":35.666119,"lng":139.774933,"matchedAddress":"東京都中央区築地七丁目１０番１１号"},{"no":115,"name":"MORI HOTEL 銀座","address":"東京都中央区築地7-16-9","town":"築地","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.664726,"lng":139.774902,"matchedAddress":"東京都中央区築地七丁目１６番９号"},{"no":116,"name":"アクセルホーム佃","address":"東京都中央区佃3-1-6","town":"佃","zone":"月島・灣岸","marketGroup":"一般／觀光型","marketType":"general","lat":35.665508,"lng":139.78743,"matchedAddress":"東京都中央区佃三丁目１番６号"},{"no":117,"name":"ＨＡＩＫＵ ＨＯＵＳＥ","address":"東京都中央区東日本橋2-8-4","town":"東日本橋","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.693386,"lng":139.785263,"matchedAddress":"東京都中央区東日本橋二丁目８番４号"},{"no":118,"name":"ワシントンR＆Bホテル東日本橋","address":"東京都中央区東日本橋2-15-6","town":"東日本橋","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.693958,"lng":139.785339,"matchedAddress":"東京都中央区東日本橋二丁目１５番６号"},{"no":119,"name":"ゲストハウストレースＡ","address":"東京都中央区東日本橋2-25-4","town":"東日本橋","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.694294,"lng":139.787262,"matchedAddress":"東京都中央区東日本橋二丁目２５番４号"},{"no":121,"name":"アマネセルホテル","address":"東京都中央区東日本橋2-26-2","town":"東日本橋","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.694794,"lng":139.786606,"matchedAddress":"東京都中央区東日本橋二丁目２６番２号"},{"no":122,"name":"MIDORI.so Nihonbashi","address":"東京都中央区東日本橋3-9-1","town":"東日本橋","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.69149,"lng":139.783646,"matchedAddress":"東京都中央区東日本橋三丁目９番１号"},{"no":123,"name":"アパホテル<東日本橋駅前>","address":"東京都中央区東日本橋3-12-14","town":"東日本橋","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.692673,"lng":139.78479,"matchedAddress":"東京都中央区東日本橋三丁目１２番１４号"},{"no":124,"name":"ホテルモンテエルマーナ東京","address":"東京都中央区日本橋3-3-15","town":"日本橋","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.680103,"lng":139.770981,"matchedAddress":"東京都中央区日本橋三丁目３番１５号"},{"no":125,"name":"からくさホテルカラーズ東京八重洲","address":"東京都中央区日本橋3-5-13","town":"日本橋","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.679131,"lng":139.772614,"matchedAddress":"東京都中央区日本橋三丁目５番１３号"},{"no":126,"name":"ｏｂｉ　Ｈｏｓｔｅｌ","address":"東京都中央区日本橋横山町3-14","town":"日本橋横山町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.691944,"lng":139.782059,"matchedAddress":"東京都中央区日本橋横山町３番１４号"},{"no":127,"name":"アパホテル<日本橋 馬喰横山駅前>","address":"東京都中央区日本橋横山町5-6","town":"日本橋横山町","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.692627,"lng":139.783173,"matchedAddress":"東京都中央区日本橋横山町５番６号"},{"no":128,"name":"ホテル奉仕会館","address":"東京都中央区日本橋横山町5-8","town":"日本橋横山町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.692818,"lng":139.783401,"matchedAddress":"東京都中央区日本橋横山町５番８号"},{"no":129,"name":"悦 HOTEL","address":"東京都中央区日本橋横山町6-11","town":"日本橋横山町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.69315,"lng":139.783463,"matchedAddress":"東京都中央区日本橋横山町６番１１号"},{"no":130,"name":"かきがら旅館","address":"東京都中央区日本橋蛎殻町1-2-10","town":"日本橋蛎殻町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.680912,"lng":139.783325,"matchedAddress":"東京都中央区日本橋蛎殻町一丁目２番１０号"},{"no":131,"name":"Nihonbashi Stay","address":"東京都中央区日本橋蛎殻町1-4-7","town":"日本橋蛎殻町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.681751,"lng":139.783127,"matchedAddress":"東京都中央区日本橋蛎殻町一丁目４番７号"},{"no":132,"name":"東横ＩＮＮ日本橋人形町","address":"東京都中央区日本橋蛎殻町1-10-2","town":"日本橋蛎殻町","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.683437,"lng":139.781128,"matchedAddress":"東京都中央区日本橋蛎殻町一丁目１０番２号"},{"no":133,"name":"相鉄フレッサイン日本橋人形町","address":"東京都中央区日本橋蛎殻町1-15-4","town":"日本橋蛎殻町","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.683388,"lng":139.78241,"matchedAddress":"東京都中央区日本橋蛎殻町一丁目１５番４号"},{"no":134,"name":"コレスト","address":"東京都中央区日本橋蛎殻町1-26-8","town":"日本橋蛎殻町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.682114,"lng":139.783951,"matchedAddress":"東京都中央区日本橋蛎殻町一丁目２６番８号"},{"no":135,"name":"MONday Apart 日本橋人形町","address":"東京都中央区日本橋蛎殻町1-34-5","town":"日本橋蛎殻町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.681625,"lng":139.78511,"matchedAddress":"東京都中央区日本橋蛎殻町一丁目３４番５号"},{"no":136,"name":"ロイヤルパークホテル","address":"東京都中央区日本橋蛎殻町2-1-1","town":"日本橋蛎殻町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.682171,"lng":139.786316,"matchedAddress":"東京都中央区日本橋蛎殻町二丁目１番"},{"no":137,"name":"Ｗｉｔｈ　Ｂ","address":"東京都中央区日本橋蛎殻町2-11-3","town":"日本橋蛎殻町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.683731,"lng":139.786453,"matchedAddress":"東京都中央区日本橋蛎殻町二丁目１１番３号"},{"no":138,"name":"シティペンション　ゼム","address":"東京都中央区日本橋蛎殻町2-16-9","town":"日本橋蛎殻町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.683926,"lng":139.787552,"matchedAddress":"東京都中央区日本橋蛎殻町二丁目１６番９号"},{"no":139,"name":"Ｈｏｔｅｌ　Ｋ５","address":"東京都中央区日本橋兜町3-5","town":"日本橋兜町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.682858,"lng":139.778198,"matchedAddress":"東京都中央区日本橋兜町３番５号"},{"no":140,"name":"キャプション by Hyatt 兜町東京","address":"東京都中央区日本橋兜町12-1","town":"日本橋兜町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.680973,"lng":139.777176,"matchedAddress":"東京都中央区日本橋兜町１２番１号"},{"no":141,"name":"センターホテル東京","address":"東京都中央区日本橋兜町15-13","town":"日本橋兜町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.679268,"lng":139.776367,"matchedAddress":"東京都中央区日本橋兜町１５番１３号"},{"no":142,"name":"ネストホテル東京八重洲","address":"東京都中央区日本橋兜町18-3","town":"日本橋兜町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.679058,"lng":139.775864,"matchedAddress":"東京都中央区日本橋兜町１８番３号"},{"no":143,"name":"京王プレッソイン日本橋茅場町","address":"東京都中央区日本橋茅場町1-3-5","town":"日本橋茅場町","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.680744,"lng":139.780457,"matchedAddress":"東京都中央区日本橋茅場町一丁目３番５号"},{"no":144,"name":"相鉄フレッサイン日本橋茅場町","address":"東京都中央区日本橋茅場町1-3-10","town":"日本橋茅場町","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.680691,"lng":139.779984,"matchedAddress":"東京都中央区日本橋茅場町一丁目３番１０号"},{"no":145,"name":"東横ＩＮＮ茅場町駅","address":"東京都中央区日本橋茅場町1-4-9","town":"日本橋茅場町","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.680519,"lng":139.779709,"matchedAddress":"東京都中央区日本橋茅場町一丁目４番９号"},{"no":146,"name":"和み屋","address":"東京都中央区日本橋茅場町2-3-3","town":"日本橋茅場町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.679058,"lng":139.777786,"matchedAddress":"東京都中央区日本橋茅場町二丁目３番３号"},{"no":147,"name":"京急EXイン東京・日本橋","address":"東京都中央区日本橋茅場町2-4-8","town":"日本橋茅場町","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.678585,"lng":139.778076,"matchedAddress":"東京都中央区日本橋茅場町二丁目４番８号"},{"no":148,"name":"スマイルホテル東京日本橋","address":"東京都中央区日本橋茅場町2-13-5","town":"日本橋茅場町","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.678967,"lng":139.780182,"matchedAddress":"東京都中央区日本橋茅場町二丁目１３番５号"},{"no":149,"name":"茅場町つくしホテル","address":"東京都中央区日本橋茅場町2-14-10","town":"日本橋茅場町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.678993,"lng":139.780273,"matchedAddress":"東京都中央区日本橋茅場町二丁目１４番１０号"},{"no":150,"name":"ホテル　ヴィラフォンテーヌ東京八丁堀","address":"東京都中央区日本橋茅場町3-3-3","town":"日本橋茅場町","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.678047,"lng":139.777847,"matchedAddress":"東京都中央区日本橋茅場町三丁目３番３号"},{"no":151,"name":"ＨＯＴＥＬ ＬｉＶＥＭＡＸ 茅場町","address":"東京都中央区日本橋茅場町3-7-3","town":"日本橋茅場町","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.67783,"lng":139.778442,"matchedAddress":"東京都中央区日本橋茅場町三丁目７番３号"},{"no":152,"name":"アパホテル〈茅場町　八丁堀駅前〉","address":"東京都中央区日本橋茅場町3-8-5","town":"日本橋茅場町","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.677502,"lng":139.778412,"matchedAddress":"東京都中央区日本橋茅場町三丁目８番５号"},{"no":153,"name":"ＭＩＭＡＲＵ東京八丁堀","address":"東京都中央区日本橋茅場町3-8-8","town":"日本橋茅場町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.677464,"lng":139.778122,"matchedAddress":"東京都中央区日本橋茅場町三丁目８番８号"},{"no":154,"name":"Ｍｉｎｎ日本橋","address":"東京都中央区日本橋久松町5-1","town":"日本橋久松町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.689358,"lng":139.7836,"matchedAddress":"東京都中央区日本橋久松町５番１号"},{"no":155,"name":"ELE Hotel 東日本橋","address":"東京都中央区日本橋久松町10-4","town":"日本橋久松町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.689404,"lng":139.78476,"matchedAddress":"東京都中央区日本橋久松町１０番４号"},{"no":156,"name":"マンダリンオリエンタル東京","address":"東京都中央区日本橋室町2-1-1","town":"日本橋室町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.686001,"lng":139.772644,"matchedAddress":"東京都中央区日本橋室町二丁目１番１号"},{"no":157,"name":"三井ガーデンホテル日本橋プレミア","address":"東京都中央区日本橋室町3-4-4","town":"日本橋室町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.688438,"lng":139.773209,"matchedAddress":"東京都中央区日本橋室町三丁目４番４号"},{"no":158,"name":"ＴＯＫＹＯＧＵＥＳＴ　日本橋　３階","address":"東京都中央区日本橋小舟町4-9","town":"日本橋小舟町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.687897,"lng":139.777328,"matchedAddress":"東京都中央区日本橋小舟町４番９号"},{"no":161,"name":"住庄ホテル","address":"東京都中央区日本橋小舟町9-14","town":"日本橋小舟町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.685619,"lng":139.779327,"matchedAddress":"東京都中央区日本橋小舟町９番１４号"},{"no":162,"name":"東横イン日本橋三越前Ａ４","address":"東京都中央区日本橋小舟町11-12","town":"日本橋小舟町","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.687119,"lng":139.778687,"matchedAddress":"東京都中央区日本橋小舟町１１番１２号"},{"no":163,"name":"スーパーホテル東京・日本橋三越前","address":"東京都中央区日本橋小舟町14-13","town":"日本橋小舟町","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.687649,"lng":139.778778,"matchedAddress":"東京都中央区日本橋小舟町１４番１３号"},{"no":164,"name":"西鉄イン日本橋","address":"東京都中央区日本橋小舟町15-18","town":"日本橋小舟町","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.685284,"lng":139.779633,"matchedAddress":"東京都中央区日本橋小舟町１５番１８号"},{"no":165,"name":"ドーミーインPREMIUM東京小伝馬町","address":"東京都中央区日本橋小伝馬町2-3","town":"日本橋小伝馬町","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.690365,"lng":139.778091,"matchedAddress":"東京都中央区日本橋小伝馬町２番３号"},{"no":166,"name":"Cherry Bloming Hotel","address":"東京都中央区日本橋小伝馬町16-6","town":"日本橋小伝馬町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.692326,"lng":139.779572,"matchedAddress":"東京都中央区日本橋小伝馬町１６番６号"},{"no":167,"name":"小伝馬町ビル","address":"東京都中央区日本橋小伝馬町17-15","town":"日本橋小伝馬町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.692375,"lng":139.779449,"matchedAddress":"東京都中央区日本橋小伝馬町１７番１５号"},{"no":168,"name":"アルモントイン東京日本橋","address":"東京都中央区日本橋小網町4-6","town":"日本橋小網町","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.6819,"lng":139.782104,"matchedAddress":"東京都中央区日本橋小網町４番６号"},{"no":169,"name":"ＨＯＴＥＬ　ＬｉＶＥＭＡＸ　日本橋小網町","address":"東京都中央区日本橋小網町10-7","town":"日本橋小網町","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.682514,"lng":139.780853,"matchedAddress":"東京都中央区日本橋小網町１０番７号"},{"no":170,"name":"ヴィアインプライム日本橋人形町","address":"東京都中央区日本橋小網町16-12","town":"日本橋小網町","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.685188,"lng":139.780075,"matchedAddress":"東京都中央区日本橋小網町１６番１２号"},{"no":171,"name":"hotel zen tokyo","address":"東京都中央区日本橋人形町1-5-8","town":"日本橋人形町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.685593,"lng":139.781967,"matchedAddress":"東京都中央区日本橋人形町一丁目５番８号"},{"no":172,"name":"ＨＯＴＥＬ ＬｉＶＥＭＡＸ　日本橋人形町","address":"東京都中央区日本橋人形町1-19-9","town":"日本橋人形町","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.685825,"lng":139.782211,"matchedAddress":"東京都中央区日本橋人形町一丁目１９番９号"},{"no":173,"name":"欅　庵","address":"東京都中央区日本橋人形町2-2-6","town":"日本橋人形町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.684982,"lng":139.784012,"matchedAddress":"東京都中央区日本橋人形町二丁目２番６号"},{"no":174,"name":"伊東旅館","address":"東京都中央区日本橋人形町2-31-3","town":"日本橋人形町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.686447,"lng":139.785034,"matchedAddress":"東京都中央区日本橋人形町二丁目３１番３号"},{"no":175,"name":"伊東旅館　別館","address":"東京都中央区日本橋人形町2-31-4","town":"日本橋人形町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.686527,"lng":139.785172,"matchedAddress":"東京都中央区日本橋人形町二丁目３１番４号"},{"no":176,"name":"SOIL Nihonbashi HOTEL","address":"東京都中央区日本橋人形町3-2-4","town":"日本橋人形町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.686432,"lng":139.779892,"matchedAddress":"東京都中央区日本橋人形町三丁目２番４号"},{"no":177,"name":"ホテル日本橋サイボー","address":"東京都中央区日本橋人形町3-3-16","town":"日本橋人形町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.685486,"lng":139.780289,"matchedAddress":"東京都中央区日本橋人形町三丁目３番１６号"},{"no":178,"name":"人形町ホテル","address":"東京都中央区日本橋人形町3-4-11","town":"日本橋人形町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.686329,"lng":139.781448,"matchedAddress":"東京都中央区日本橋人形町三丁目４番１１号"},{"no":179,"name":"ナインアワーズ人形町","address":"東京都中央区日本橋人形町3-6-1","town":"日本橋人形町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.686745,"lng":139.781189,"matchedAddress":"東京都中央区日本橋人形町三丁目６番１号"},{"no":180,"name":"ＢｎＡ＿ＷＡＬＬ","address":"東京都中央区日本橋大伝馬町1-1","town":"日本橋大伝馬町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.688786,"lng":139.777756,"matchedAddress":"東京都中央区日本橋大伝馬町１番１号"},{"no":181,"name":"東横INN日本橋馬喰町","address":"東京都中央区日本橋大伝馬町14-16","town":"日本橋大伝馬町","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.691284,"lng":139.781113,"matchedAddress":"東京都中央区日本橋大伝馬町１４番１６号"},{"no":182,"name":"アパホテル〈小伝馬町駅前〉","address":"東京都中央区日本橋大伝馬町14-20","town":"日本橋大伝馬町","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.690948,"lng":139.780609,"matchedAddress":"東京都中央区日本橋大伝馬町１４番２０号"},{"no":183,"name":"ＣＩＴＡＮ","address":"東京都中央区日本橋大伝馬町15-2","town":"日本橋大伝馬町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.691502,"lng":139.781342,"matchedAddress":"東京都中央区日本橋大伝馬町１５番２号"},{"no":184,"name":"エスペリアイン日本橋箱崎","address":"東京都中央区日本橋中洲4-9","town":"日本橋中洲","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.683235,"lng":139.790283,"matchedAddress":"東京都中央区日本橋中洲４番９号"},{"no":185,"name":"Tokyo Guesthouse HIVE","address":"東京都中央区日本橋馬喰町1-5-6","town":"日本橋馬喰町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.692516,"lng":139.78154,"matchedAddress":"東京都中央区日本橋馬喰町一丁目５番６号"},{"no":186,"name":"アパホテル＜日本橋　馬喰町駅前＞","address":"東京都中央区日本橋馬喰町1-6-6","town":"日本橋馬喰町","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.693188,"lng":139.78241,"matchedAddress":"東京都中央区日本橋馬喰町一丁目６番６号"},{"no":187,"name":"青要ホテル","address":"東京都中央区日本橋馬喰町1-6-18","town":"日本橋馬喰町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.692833,"lng":139.782562,"matchedAddress":"東京都中央区日本橋馬喰町一丁目６番１８号"},{"no":188,"name":"ＨＯＴＥＬ ＬｉＶＥＭＡＸ 東京馬喰町","address":"東京都中央区日本橋馬喰町1-7-20","town":"日本橋馬喰町","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.693161,"lng":139.781952,"matchedAddress":"東京都中央区日本橋馬喰町一丁目７番２０号"},{"no":189,"name":"コンフォートホテル東京　東日本橋","address":"東京都中央区日本橋馬喰町1-10-11","town":"日本橋馬喰町","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.694042,"lng":139.783081,"matchedAddress":"東京都中央区日本橋馬喰町一丁目１０番１１号"},{"no":190,"name":"マンガアートホテル馬喰町","address":"東京都中央区日本橋馬喰町1-10-12","town":"日本橋馬喰町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.693947,"lng":139.782959,"matchedAddress":"東京都中央区日本橋馬喰町一丁目１０番１２号"},{"no":191,"name":"ＤＤＤ　ＨＯＴＥＬ","address":"東京都中央区日本橋馬喰町2-2-1","town":"日本橋馬喰町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.695206,"lng":139.783615,"matchedAddress":"東京都中央区日本橋馬喰町二丁目２番１号"},{"no":192,"name":"東横INN神田秋葉原","address":"東京都中央区日本橋馬喰町2-2-4","town":"日本橋馬喰町","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.695271,"lng":139.783127,"matchedAddress":"東京都中央区日本橋馬喰町二丁目２番４号"},{"no":193,"name":"ＭＩＭＡＲＵ東京日本橋水天宮前","address":"東京都中央区日本橋箱崎町17-6","town":"日本橋箱崎町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.68066,"lng":139.785263,"matchedAddress":"東京都中央区日本橋箱崎町１７番６号"},{"no":194,"name":"ホテル　ヴィラフォンテーヌ東京日本橋箱崎アネックス","address":"東京都中央区日本橋箱崎町20-4","town":"日本橋箱崎町","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.680126,"lng":139.785995,"matchedAddress":"東京都中央区日本橋箱崎町２０番４号"},{"no":195,"name":"ホテル　ヴィラフォンテーヌ東京日本橋箱崎","address":"東京都中央区日本橋箱崎町20-10","town":"日本橋箱崎町","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.680466,"lng":139.786133,"matchedAddress":"東京都中央区日本橋箱崎町２０番１０号"},{"no":196,"name":"ＨＯＴＥＬ　ＡＸＡＳ　ＮＩＨＯＮＢＡＳＨＩ","address":"東京都中央区日本橋箱崎町20-12","town":"日本橋箱崎町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.680275,"lng":139.786362,"matchedAddress":"東京都中央区日本橋箱崎町２０番１２号"},{"no":197,"name":"ＨＯＴＥＬ ＬｉＶＥＭＡＸ 日本橋箱崎","address":"東京都中央区日本橋箱崎町29-5","town":"日本橋箱崎町","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.679684,"lng":139.787598,"matchedAddress":"東京都中央区日本橋箱崎町２９番５号"},{"no":198,"name":"Ｍｉｎｎ日本橋水天宮前","address":"東京都中央区日本橋箱崎町44-6","town":"日本橋箱崎町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.681686,"lng":139.78891,"matchedAddress":"東京都中央区日本橋箱崎町４４番６号"},{"no":199,"name":"東横INN日本橋浜町明治座前","address":"東京都中央区日本橋浜町1-1-4","town":"日本橋浜町","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.689259,"lng":139.78566,"matchedAddress":"東京都中央区日本橋浜町一丁目１番４号"},{"no":200,"name":"ホテルウィル","address":"東京都中央区日本橋浜町1-4-5","town":"日本橋浜町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.68961,"lng":139.786087,"matchedAddress":"東京都中央区日本橋浜町一丁目４番５号"},{"no":201,"name":"TOKYOGUEST　浜町","address":"東京都中央区日本橋浜町1-4-7","town":"日本橋浜町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.689777,"lng":139.786346,"matchedAddress":"東京都中央区日本橋浜町一丁目４番７号"},{"no":202,"name":"Ｔｏｋｙｏ　Ｏｅｄｏ　Ｈｏｔｅｌ","address":"東京都中央区日本橋浜町1-10-4","town":"日本橋浜町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.690929,"lng":139.787109,"matchedAddress":"東京都中央区日本橋浜町一丁目１０番４号"},{"no":203,"name":"Ｎ＋ＨＯＴＥＬ東京日本橋","address":"東京都中央区日本橋浜町2-23-8","town":"日本橋浜町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.685547,"lng":139.787659,"matchedAddress":"東京都中央区日本橋浜町二丁目２３番８号"},{"no":204,"name":"KOKO HOTEL Premier 日本橋浜町","address":"東京都中央区日本橋浜町2-30-4","town":"日本橋浜町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.687283,"lng":139.787338,"matchedAddress":"東京都中央区日本橋浜町二丁目３０番４号"},{"no":205,"name":"東横INN東京駅新大橋前","address":"東京都中央区日本橋浜町2-58-2","town":"日本橋浜町","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.687294,"lng":139.790421,"matchedAddress":"東京都中央区日本橋浜町二丁目５８番２号"},{"no":206,"name":"ＨＡＭＡＣＨＯ　ＨＯＴＥＬ","address":"東京都中央区日本橋浜町3-20-2","town":"日本橋浜町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.68454,"lng":139.789307,"matchedAddress":"東京都中央区日本橋浜町三丁目２０番２号"},{"no":207,"name":"アパホテル<日本橋浜町駅南>","address":"東京都中央区日本橋浜町3-43-8","town":"日本橋浜町","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.68634,"lng":139.791611,"matchedAddress":"東京都中央区日本橋浜町三丁目４３番８号"},{"no":208,"name":"アパホテル〈人形町駅東〉","address":"東京都中央区日本橋富沢町2-11","town":"日本橋富沢町","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.688065,"lng":139.784149,"matchedAddress":"東京都中央区日本橋富沢町２番１１号"},{"no":209,"name":"東横INN日本橋税務署前","address":"東京都中央区日本橋富沢町11-5","town":"日本橋富沢町","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.689838,"lng":139.781494,"matchedAddress":"東京都中央区日本橋富沢町１１番５号"},{"no":210,"name":"ビジネスホテル堀留ヴィラ","address":"東京都中央区日本橋堀留町1-10-10","town":"日本橋堀留町","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.688923,"lng":139.779892,"matchedAddress":"東京都中央区日本橋堀留町一丁目１０番１０号"},{"no":211,"name":"Dash Living Nihonbashi","address":"東京都中央区日本橋堀留町2-1-7","town":"日本橋堀留町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.688091,"lng":139.781174,"matchedAddress":"東京都中央区日本橋堀留町二丁目１番７号"},{"no":212,"name":"アパホテル〈人形町駅北〉","address":"東京都中央区日本橋堀留町2-9-4","town":"日本橋堀留町","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.688301,"lng":139.781479,"matchedAddress":"東京都中央区日本橋堀留町二丁目９番４号"},{"no":213,"name":"MIMARU SUITES 東京日本橋","address":"東京都中央区日本橋堀留町2-10-9","town":"日本橋堀留町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.687977,"lng":139.782379,"matchedAddress":"東京都中央区日本橋堀留町二丁目１０番９号"},{"no":214,"name":"Jホテル東京ジオ","address":"東京都中央区日本橋本石町3-1-6","town":"日本橋本石町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.686668,"lng":139.770432,"matchedAddress":"東京都中央区日本橋本石町三丁目１番６号"},{"no":215,"name":"京王プレッソイン大手町","address":"東京都中央区日本橋本石町4-4-1","town":"日本橋本石町","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.687809,"lng":139.769989,"matchedAddress":"東京都中央区日本橋本石町四丁目４番１号"},{"no":216,"name":"スマイルホテル日本橋三越前","address":"東京都中央区日本橋本町1-4-14","town":"日本橋本町","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.686077,"lng":139.776138,"matchedAddress":"東京都中央区日本橋本町一丁目４番１４号"},{"no":217,"name":"ホテル　ヴィラフォンテーヌ東京日本橋三越前","address":"東京都中央区日本橋本町1-7-6","town":"日本橋本町","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.686325,"lng":139.777237,"matchedAddress":"東京都中央区日本橋本町一丁目７番６号"},{"no":218,"name":"Hotel Rakuragu","address":"東京都中央区日本橋本町1-7-9","town":"日本橋本町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.68623,"lng":139.777618,"matchedAddress":"東京都中央区日本橋本町一丁目７番９号"},{"no":219,"name":"日本橋JAPANBRIDGE","address":"東京都中央区日本橋本町3-4-18","town":"日本橋本町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.688614,"lng":139.775192,"matchedAddress":"東京都中央区日本橋本町三丁目４番１８号"},{"no":220,"name":"MONday Apart Premium 日本橋","address":"東京都中央区日本橋本町4-1-5","town":"日本橋本町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.689396,"lng":139.773849,"matchedAddress":"東京都中央区日本橋本町四丁目１番５号"},{"no":221,"name":"東急ステイ日本橋","address":"東京都中央区日本橋本町4-7-9","town":"日本橋本町","zone":"日本橋","marketGroup":"商務型","marketType":"business","lat":35.690125,"lng":139.775162,"matchedAddress":"東京都中央区日本橋本町四丁目７番９号"},{"no":222,"name":"ホテルかずさや","address":"東京都中央区日本橋本町4-7-15","town":"日本橋本町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.689678,"lng":139.774551,"matchedAddress":"東京都中央区日本橋本町四丁目７番１５号"},{"no":223,"name":"bnb+ back packer house","address":"東京都中央区日本橋本町4-11-10","town":"日本橋本町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.690552,"lng":139.776093,"matchedAddress":"東京都中央区日本橋本町四丁目１１番１０号"},{"no":224,"name":"ＤＥＮ　～伝～","address":"東京都中央区日本橋本町4-13-8","town":"日本橋本町","zone":"日本橋","marketGroup":"一般／觀光型","marketType":"general","lat":35.691067,"lng":139.776733,"matchedAddress":"東京都中央区日本橋本町四丁目１３番８号"},{"no":225,"name":"Ｓｅｃｔｉｏｎ　Ｌ　Ｈａｔｃｈｏｂｏｒｉ","address":"東京都中央区入船1-9-10","town":"入船","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.672253,"lng":139.777649,"matchedAddress":"東京都中央区入船一丁目９番１０号"},{"no":226,"name":"Premium Apart MONday 銀座EAST","address":"東京都中央区入船1-9-12","town":"入船","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.672482,"lng":139.777664,"matchedAddress":"東京都中央区入船一丁目９番１２号"},{"no":227,"name":"Hotel Vintage Tsukiji","address":"東京都中央区入船2-10-7","town":"入船","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.6712,"lng":139.777573,"matchedAddress":"東京都中央区入船二丁目１０番７号"},{"no":228,"name":"MONday Apart Premium 銀座新富町","address":"東京都中央区入船3-4-1","town":"入船","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.670631,"lng":139.776215,"matchedAddress":"東京都中央区入船三丁目４番１号"},{"no":229,"name":"MOONOKA HOTEL","address":"東京都中央区入船3-7-3","town":"入船","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.671101,"lng":139.777557,"matchedAddress":"東京都中央区入船三丁目７番３号"},{"no":230,"name":"ホテル龍名館東京","address":"東京都中央区八重洲1-3-22","town":"八重洲","zone":"京橋・八重洲","marketGroup":"一般／觀光型","marketType":"general","lat":35.683113,"lng":139.770966,"matchedAddress":"東京都中央区八重洲一丁目３番２２号"},{"no":231,"name":"からくさホテル TOKYO STATION","address":"東京都中央区八重洲1-5-3","town":"八重洲","zone":"京橋・八重洲","marketGroup":"一般／觀光型","marketType":"general","lat":35.682194,"lng":139.770966,"matchedAddress":"東京都中央区八重洲一丁目５番３号"},{"no":232,"name":"東横ＩＮＮ東京駅八重洲北口","address":"東京都中央区八重洲1-5-5","town":"八重洲","zone":"京橋・八重洲","marketGroup":"商務型","marketType":"business","lat":35.682072,"lng":139.771255,"matchedAddress":"東京都中央区八重洲一丁目５番５号"},{"no":233,"name":"八重洲ターミナルホテル","address":"東京都中央区八重洲1-5-14","town":"八重洲","zone":"京橋・八重洲","marketGroup":"一般／觀光型","marketType":"general","lat":35.681538,"lng":139.770966,"matchedAddress":"東京都中央区八重洲一丁目５番１４号"},{"no":234,"name":"RHUMB LINE TOKYO","address":"東京都中央区八重洲1-8-3","town":"八重洲","zone":"京橋・八重洲","marketGroup":"一般／觀光型","marketType":"general","lat":35.680836,"lng":139.770065,"matchedAddress":"東京都中央区八重洲一丁目８番３号"},{"no":235,"name":"ブルガリ　ホテル　東京","address":"東京都中央区八重洲2-2-1","town":"八重洲","zone":"京橋・八重洲","marketGroup":"一般／觀光型","marketType":"general","lat":35.679695,"lng":139.769165,"matchedAddress":"東京都中央区八重洲二丁目２番１号"},{"no":236,"name":"スーパーホテルＰｒｅｍｉｅｒ東京駅八重洲中央口","address":"東京都中央区八重洲2-2-7","town":"八重洲","zone":"京橋・八重洲","marketGroup":"商務型","marketType":"business","lat":35.679279,"lng":139.770004,"matchedAddress":"東京都中央区八重洲二丁目２番７号"},{"no":237,"name":"ＭＩＭＡＲＵ東京ＳＴＡＴＩＯＮ ＥＡＳＴ","address":"東京都中央区八丁堀1-12-8","town":"八丁堀","zone":"八丁堀・新川","marketGroup":"一般／觀光型","marketType":"general","lat":35.677071,"lng":139.778564,"matchedAddress":"東京都中央区八丁堀一丁目１２番８号"},{"no":238,"name":"ホテルサードニクス東京","address":"東京都中央区八丁堀1-13-7","town":"八丁堀","zone":"八丁堀・新川","marketGroup":"一般／觀光型","marketType":"general","lat":35.676647,"lng":139.778519,"matchedAddress":"東京都中央区八丁堀一丁目１３番７号"},{"no":239,"name":"ホテル八重の翠東京","address":"東京都中央区八丁堀2-13-1","town":"八丁堀","zone":"八丁堀・新川","marketGroup":"一般／觀光型","marketType":"general","lat":35.677258,"lng":139.776215,"matchedAddress":"東京都中央区八丁堀二丁目１３番１号"},{"no":240,"name":"アパホテル〈八丁堀駅前〉","address":"東京都中央区八丁堀2-26-3","town":"八丁堀","zone":"八丁堀・新川","marketGroup":"商務型","marketType":"business","lat":35.675774,"lng":139.778198,"matchedAddress":"東京都中央区八丁堀二丁目２６番３号"},{"no":241,"name":"GRAND MONday 銀座","address":"東京都中央区八丁堀3-10-5","town":"八丁堀","zone":"八丁堀・新川","marketGroup":"一般／觀光型","marketType":"general","lat":35.674778,"lng":139.774124,"matchedAddress":"東京都中央区八丁堀三丁目１０番５号"},{"no":242,"name":"イチホテル　東京八丁堀","address":"東京都中央区八丁堀3-26-11","town":"八丁堀","zone":"八丁堀・新川","marketGroup":"一般／觀光型","marketType":"general","lat":35.675011,"lng":139.778625,"matchedAddress":"東京都中央区八丁堀三丁目２６番１１号"},{"no":243,"name":"八丁堀ＡＦビル","address":"東京都中央区湊1-6-1","town":"湊","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.672733,"lng":139.779404,"matchedAddress":"東京都中央区湊一丁目６番１号"},{"no":244,"name":"東京櫻子Hatchobori","address":"東京都中央区湊1-7-6","town":"湊","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.672943,"lng":139.78009,"matchedAddress":"東京都中央区湊一丁目７番６号"},{"no":245,"name":"One More Heart at TSUKIJI1","address":"東京都中央区明石町3-6","town":"明石町","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.668903,"lng":139.778534,"matchedAddress":"東京都中央区明石町３番６号"},{"no":246,"name":"銀座クレストン","address":"東京都中央区明石町8-1","town":"明石町","zone":"築地・新富","marketGroup":"一般／觀光型","marketType":"general","lat":35.667507,"lng":139.778473,"matchedAddress":"東京都中央区明石町８番１号"}];
+        const HOTEL_MARKER_COUNTS = {"all":243,"business":74,"general":169};
+
+        function escapeHtml(value) {
+            return String(value ?? '').replace(/[&<>"']/g, function(char) {
+                return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[char];
+            });
+        }
+
+        function initHotelMap() {
+            const mapEl = document.getElementById('hotelMap');
+            if (!mapEl || typeof L === 'undefined') return;
+
+            const typeLabels = {
+                business: '商務旅館',
+                general: '一般旅館'
+            };
+            const map = L.map(mapEl, { scrollWheelZoom: false }).setView([35.6767, 139.7746], 14);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+
+            const markerLayers = HOTEL_MARKERS.map(function(hotel) {
+                const icon = L.divIcon({
+                    className: 'hotel-pin-icon',
+                    html: `<span class="hotel-pin ${hotel.marketType}" aria-hidden="true"></span>`,
+                    iconSize: [22, 28],
+                    iconAnchor: [11, 28],
+                    popupAnchor: [0, -24]
+                });
+                const marker = L.marker([hotel.lat, hotel.lng], { icon }).bindPopup(`
+                    <div class="hotel-popup">
+                        <strong>${escapeHtml(hotel.name)}</strong><br>
+                        <span>${escapeHtml(typeLabels[hotel.marketType] || hotel.marketGroup)}</span><br>
+                        <span>${escapeHtml(hotel.address)}</span><br>
+                        <span>${escapeHtml(hotel.zone)}</span>
+                    </div>
+                `);
+                return { type: hotel.marketType, marker, latlng: [hotel.lat, hotel.lng] };
+            });
+
+            function fitVisibleBounds(visibleMarkers) {
+                const bounds = L.latLngBounds(visibleMarkers.map(function(item) { return item.latlng; }));
+                if (bounds.isValid()) map.fitBounds(bounds, { padding: [24, 24], maxZoom: 15 });
+            }
+
+            function applyFilter(type) {
+                const visibleMarkers = [];
+                markerLayers.forEach(function(item) {
+                    const shouldShow = type === 'all' || item.type === type;
+                    if (shouldShow) {
+                        if (!map.hasLayer(item.marker)) item.marker.addTo(map);
+                        visibleMarkers.push(item);
+                    } else if (map.hasLayer(item.marker)) {
+                        map.removeLayer(item.marker);
+                    }
+                });
+                document.querySelectorAll('[data-map-filter]').forEach(function(button) {
+                    const active = button.dataset.mapFilter === type;
+                    button.classList.toggle('active', active);
+                    button.setAttribute('aria-pressed', String(active));
+                });
+                const summary = document.getElementById('mapSummary');
+                if (summary) {
+                    const label = type === 'all' ? '全部' : typeLabels[type];
+                    summary.textContent = `${label} ${HOTEL_MARKER_COUNTS[type]} 家旅館`;
+                }
+                fitVisibleBounds(visibleMarkers);
+            }
+
+            document.querySelectorAll('[data-map-filter]').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    applyFilter(button.dataset.mapFilter);
+                });
+            });
+
+            applyFilter('all');
+            requestAnimationFrame(function() { map.invalidateSize(); fitVisibleBounds(markerLayers); });
+            setTimeout(function() { map.invalidateSize(); fitVisibleBounds(markerLayers); }, 300);
+            window.addEventListener('resize', function() { map.invalidateSize(); });
+        }
+
+        initHotelMap();
+
+        const ctx = document.getElementById('strategyChart').getContext('2d');
+        const strategyChart = new Chart(ctx, {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: '商務旅館開發區域',
+                    data: [{x: 9, y: 3}, {x: 8, y: 4}, {x: 9.5, y: 2}],
+                    backgroundColor: 'rgba(52, 152, 219, 0.8)',
+                    pointRadius: 10
+                },
+                {
+                    label: '一般旅館開發區域',
+                    data: [{x: 4, y: 9}, {x: 3, y: 8.5}, {x: 5, y: 8}],
+                    backgroundColor: 'rgba(200, 169, 126, 0.8)',
+                    pointRadius: 12
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        title: { display: true, text: '依賴現有生活機能 (車站/商圈)' },
+                        min: 0, max: 10
+                    },
+                    y: {
+                        title: { display: true, text: '注重土地未來潛力 (都更/腹地)' },
+                        min: 0, max: 10
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
