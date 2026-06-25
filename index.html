@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
@@ -237,6 +237,65 @@
         .hotel-popup strong {
             color: #1a2b4c;
         }
+        .occupancy-section .source-note a {
+            color: #1a2b4c;
+        }
+        .occupancy-chart {
+            border: 1px solid #e4e8ee;
+            border-radius: 8px;
+            background: #fff;
+            padding: 18px 18px 12px;
+            margin: 18px 0 22px;
+            overflow-x: auto;
+        }
+        .occupancy-bars {
+            min-width: 760px;
+            height: 280px;
+            display: grid;
+            grid-template-columns: repeat(11, minmax(44px, 1fr));
+            align-items: end;
+            gap: 12px;
+            padding: 24px 8px 38px;
+            border-left: 1px solid #d8dee8;
+            border-bottom: 1px solid #d8dee8;
+            background:
+                linear-gradient(to top, rgba(232,237,243,0.95) 1px, transparent 1px) 0 0 / 100% 25%;
+        }
+        .occupancy-bar {
+            position: relative;
+            height: var(--height);
+            min-height: 8px;
+            border-radius: 7px 7px 0 0;
+            background: linear-gradient(180deg, #3498db 0%, #1f6fa8 100%);
+        }
+        .occupancy-bar.preliminary {
+            background: linear-gradient(180deg, #c8a97e 0%, #a8824f 100%);
+        }
+        .occupancy-bar .value,
+        .occupancy-bar .year {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            font-size: 0.78rem;
+        }
+        .occupancy-bar .value {
+            top: -23px;
+            color: #1a2b4c;
+            font-weight: 700;
+        }
+        .occupancy-bar .year {
+            bottom: -27px;
+            color: #5d6470;
+        }
+        .occupancy-axis-note {
+            min-width: 760px;
+            display: flex;
+            justify-content: space-between;
+            color: #5d6470;
+            font-size: 0.78rem;
+            margin-top: 6px;
+        }
         @media (max-width: 991.98px) {
             .map-header {
                 flex-direction: column;
@@ -376,6 +435,67 @@
             </div>
             <p class="small text-muted mb-0">來源：中央區旅宿名錄去重 243 筆；上表為商務型樣本，非排名或推薦清單。</p>
         </div>
+
+        <section id="tokyo-occupancy-trend">
+            <h2 class="section-title">四、 東京都全體入住率趨勢（2015–2025）</h2>
+            <div class="card p-4 occupancy-section">
+                <div class="d-flex flex-column flex-md-row justify-content-between gap-3">
+                    <div>
+                        <h5 class="mb-2">東京都住宿設施客室稼働率（全體）</h5>
+                        <p class="text-muted mb-0">依日本觀光廳「宿泊旅行統計調査」年度資料，抽取東京都「都道府県別宿泊施設タイプ別客室稼働率」中的全體欄位；2015–2024 為確定值，2025 為年間速報值。</p>
+                    </div>
+                    <div class="text-md-end">
+                        <div class="fs-4 fw-bold text-primary">76.8%</div>
+                        <div class="small text-muted">2025 年速報值</div>
+                    </div>
+                </div>
+                <div class="occupancy-chart" role="img" aria-label="2015 到 2025 年東京都全體入住率趨勢">
+                    <div class="occupancy-bars">
+                        <div class="occupancy-bar" style="--height: 91.8%;"><span class="value">82.6%</span><span class="year">2015</span></div>
+                        <div class="occupancy-bar" style="--height: 87.6%;"><span class="value">78.8%</span><span class="year">2016</span></div>
+                        <div class="occupancy-bar" style="--height: 88.9%;"><span class="value">80.0%</span><span class="year">2017</span></div>
+                        <div class="occupancy-bar" style="--height: 88.9%;"><span class="value">80.0%</span><span class="year">2018</span></div>
+                        <div class="occupancy-bar" style="--height: 88.3%;"><span class="value">79.5%</span><span class="year">2019</span></div>
+                        <div class="occupancy-bar" style="--height: 37.3%;"><span class="value">33.6%</span><span class="year">2020</span></div>
+                        <div class="occupancy-bar" style="--height: 40.0%;"><span class="value">36.0%</span><span class="year">2021</span></div>
+                        <div class="occupancy-bar" style="--height: 58.7%;"><span class="value">52.8%</span><span class="year">2022</span></div>
+                        <div class="occupancy-bar" style="--height: 81.6%;"><span class="value">73.4%</span><span class="year">2023</span></div>
+                        <div class="occupancy-bar" style="--height: 83.4%;"><span class="value">75.1%</span><span class="year">2024</span></div>
+                        <div class="occupancy-bar preliminary" style="--height: 85.3%;"><span class="value">76.8%</span><span class="year">2025</span></div>
+                    </div>
+                    <div class="occupancy-axis-note">
+                        <span>0%</span>
+                        <span>刻度上限：90%</span>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-2">
+                        <thead>
+                            <tr>
+                                <th style="width: 18%;">年度</th>
+                                <th style="width: 24%;">全體入住率</th>
+                                <th style="width: 22%;">資料狀態</th>
+                                <th style="width: 36%;">來源檔案</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>2015</td><td class="fw-bold">82.6%</td><td>確定值</td><td><a href="https://www.mlit.go.jp/kankocho/content/001905482.pdf" target="_blank" rel="noopener">2015 年 PDF</a></td></tr>
+                            <tr><td>2016</td><td class="fw-bold">78.8%</td><td>確定值</td><td><a href="https://www.mlit.go.jp/kankocho/content/001905483.pdf" target="_blank" rel="noopener">2016 年 PDF</a></td></tr>
+                            <tr><td>2017</td><td class="fw-bold">80.0%</td><td>確定值</td><td><a href="https://www.mlit.go.jp/kankocho/content/001905484.pdf" target="_blank" rel="noopener">2017 年 PDF</a></td></tr>
+                            <tr><td>2018</td><td class="fw-bold">80.0%</td><td>確定值</td><td><a href="https://www.mlit.go.jp/kankocho/content/001905486.pdf" target="_blank" rel="noopener">2018 年 PDF</a></td></tr>
+                            <tr><td>2019</td><td class="fw-bold">79.5%</td><td>確定值</td><td><a href="https://www.mlit.go.jp/kankocho/content/001905487.pdf" target="_blank" rel="noopener">2019 年 PDF</a></td></tr>
+                            <tr><td>2020</td><td class="fw-bold">33.6%</td><td>確定值</td><td><a href="https://www.mlit.go.jp/kankocho/content/001905488.pdf" target="_blank" rel="noopener">2020 年 PDF</a></td></tr>
+                            <tr><td>2021</td><td class="fw-bold">36.0%</td><td>確定值</td><td><a href="https://www.mlit.go.jp/kankocho/content/001905489.pdf" target="_blank" rel="noopener">2021 年 PDF</a></td></tr>
+                            <tr><td>2022</td><td class="fw-bold">52.8%</td><td>確定值</td><td><a href="https://www.mlit.go.jp/kankocho/content/001905490.pdf" target="_blank" rel="noopener">2022 年 PDF</a></td></tr>
+                            <tr><td>2023</td><td class="fw-bold">73.4%</td><td>確定值</td><td><a href="https://www.mlit.go.jp/kankocho/content/001905491.pdf" target="_blank" rel="noopener">2023 年 PDF</a></td></tr>
+                            <tr><td>2024</td><td class="fw-bold">75.1%</td><td>確定值</td><td><a href="https://www.mlit.go.jp/kankocho/content/001905493.pdf" target="_blank" rel="noopener">2024 年 PDF</a></td></tr>
+                            <tr><td>2025</td><td class="fw-bold">76.8%</td><td>速報值</td><td><a href="https://www.mlit.go.jp/kankocho/content/001984051.pdf" target="_blank" rel="noopener">2025 年 PDF</a></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="small text-muted source-note mb-0">來源：<a href="https://www.mlit.go.jp/kankocho/tokei_hakusyo/shukuhakutokei.html" target="_blank" rel="noopener">國土交通省觀光廳「宿泊旅行統計調査」</a>。此處的「入住率」對應原始資料的「客室稼働率（全體）」；2025 年為年間速報值，後續確定值發布後可能修正。</p>
+            </div>
+        </section>
 
     </div>
 
