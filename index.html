@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
@@ -357,92 +357,206 @@
             </div>
         </div>
 
+        <div class="card p-4">
+            <h4>3. 許可年份區段與類型變化</h4>
+            <p class="text-muted">這張表把 243 筆名錄依許可年份切成幾個時間區段。白話來說，它不是在說每一家一定是那一年新開幕，而是用名錄上的許可年份看「供給資料在什麼時期比較密集」。許可年份可能包含新開業、改名、承接、重新申請或資料更新，所以只能當作時間分布觀察。</p>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th style="width: 22%;">許可年份區段</th>
+                            <th style="width: 18%;">全部設施</th>
+                            <th style="width: 18%;">商務型</th>
+                            <th style="width: 18%;">一般／觀光型</th>
+                            <th style="width: 24%;">白話解讀</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>2009 以前</td><td class="fw-bold">50</td><td>23</td><td>27</td><td>早期存量中，商務型與一般／觀光型大致都有。</td></tr>
+                        <tr><td>2010–2014</td><td class="fw-bold">21</td><td>14</td><td>7</td><td>這段商務型占比較高，較像標準化住宿供給補入。</td></tr>
+                        <tr><td>2015–2019</td><td class="fw-bold">73</td><td>24</td><td>49</td><td>疫情前名錄增加較明顯，一般／觀光型開始拉開差距。</td></tr>
+                        <tr><td>2020–2022</td><td class="fw-bold">41</td><td>8</td><td>33</td><td>疫情期仍有登錄或更新，但多數落在一般／觀光型。</td></tr>
+                        <tr><td>2023 以後</td><td class="fw-bold">58</td><td>5</td><td>53</td><td>近年新增或更新幾乎集中在一般／觀光型，顯示產品型態更分散。</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="small text-muted mb-0">資料來源：中央區旅宿名錄去重 243 筆，依 <code>permit_year</code> 與 <code>market_group</code> 彙整。這是名錄時間分布，不是實際完工量或營運量。</p>
+        </div>
+
+        <div class="card p-4">
+            <h4>4. 商務型與一般／觀光型的地理分布</h4>
+            <p class="text-muted">從地圖和名錄來看，一般／觀光型比較像「到處都有」，商務型則比較靠近辦公、車站與交通節點。白話來說，一般／觀光型可以吃到觀光、品牌、公寓式、中長住、家庭與生活風格需求，所以分散在銀座、築地、日本橋、八重洲、月島灣岸等多種區位；商務型比較依賴通勤便利、辦公需求與標準化營運，因此集中在日本橋、茅場町、京橋、八重洲、銀座周邊。</p>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th style="width: 22%;">區域</th>
+                            <th style="width: 16%;">全部設施</th>
+                            <th style="width: 16%;">商務型</th>
+                            <th style="width: 16%;">一般／觀光型</th>
+                            <th style="width: 30%;">分布解讀</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>日本橋</td><td class="fw-bold">105</td><td>41</td><td>64</td><td>商務型最多的區域；辦公、金融、交通與老城區住宿需求重疊。</td></tr>
+                        <tr><td>築地・新富</td><td class="fw-bold">56</td><td>11</td><td>45</td><td>一般／觀光型占多數，和築地觀光、生活圈住宿及公寓式需求較有關。</td></tr>
+                        <tr><td>銀座</td><td class="fw-bold">44</td><td>10</td><td>34</td><td>一般／觀光型明顯較多；品牌、購物、觀光與高階住宿訊號較強。</td></tr>
+                        <tr><td>京橋・八重洲</td><td class="fw-bold">17</td><td>7</td><td>10</td><td>商務占比高，與東京站、辦公與交通便利性有關。</td></tr>
+                        <tr><td>八丁堀・新川</td><td class="fw-bold">12</td><td>5</td><td>7</td><td>規模較小，但商務占比也偏高，適合看作辦公外圍與交通節點補充供給。</td></tr>
+                        <tr><td>月島・灣岸</td><td class="fw-bold">9</td><td>0</td><td>9</td><td>目前名錄中未見商務型，較偏一般住宿或灣岸生活圈需求。</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <div class="highlight-box">
+                        <strong>商務型為什麼集中？</strong><br>
+                        商務旅館通常需要穩定、重複、交通導向的需求，例如辦公區、車站、金融或批發商圈。中央區裡，日本橋、茅場町、京橋、八重洲和銀座都有這些條件，所以商務型比較容易聚在這些地方。
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="highlight-box">
+                        <strong>一般／觀光型為什麼分散？</strong><br>
+                        一般／觀光型不是單一產品，裡面有高階品牌、生活風格、公寓式、家庭與中長住等類型。這些需求不只看辦公，也看購物、觀光、生活機能與街區特色，所以會比商務型分散。
+                    </div>
+                </div>
+            </div>
+            <p class="small text-muted mt-3 mb-0">資料來源：中央區旅宿名錄去重 243 筆，依 <code>zone6</code> 與 <code>market_group</code> 彙整。這裡說的是設施數分布，不代表房間數、營收或入住表現。</p>
+        </div>
+
         <h2 class="section-title">二、 分類基準與市場定位</h2>
         <div class="card p-4">
             <p>本頁沿用資料表中的 <code>market_group</code> 分類，將 243 家設施整理為「商務型」與「一般／觀光型」兩組；此分類是市場定位代理，不代表官方星級、實際房價或營運績效。</p>
+            <p class="text-muted mb-0">白話來說，這裡只是先把名錄分成兩個容易觀察的類型：一邊偏向標準化、交通導向的住宿供給；另一邊則包含觀光、品牌、生活風格、公寓式與其他非商務型住宿。這不是在說哪一類比較好，也不是投資建議。</p>
             <div class="row mt-3">
                 <div class="col-md-6">
-                    <h5>🏛️ 一般旅館 (Full-service / Luxury)</h5>
+                    <h5>一般／觀光型旅館</h5>
                     <p class="text-muted">這一組包含觀光、全服務、生活風格、公寓式與其他非商務型住宿；其共同點是未被資料表歸為商務型。</p>
                 </div>
                 <div class="col-md-6">
-                    <h5>🏨 商務旅館 (Business Hotel)</h5>
+                    <h5>商務型旅館</h5>
                     <p class="text-muted">這一組為資料表標示的商務型住宿；可用於觀察交通節點周邊的住宿供給，但不直接代表實際周轉率或獲利能力。</p>
                 </div>
             </div>
         </div>
         <h2 class="section-title">三、 中央區代表性旅館案例與資料限制</h2>
         <div class="card p-4">
-            <p class="text-muted mb-3">以下改為「非排名」案例整理。案例用於說明中央區旅館類型與區位差異，不代表營收、ADR、評價或推薦順序。若資料來源未公開單館入住率、ADR、RevPAR 或營收，表格一律標示為未公開。</p>
+            <p class="text-muted mb-3">以下是「非排名」案例整理，用來看中央區內不同旅館類型大概長什麼樣子。表格只放兩邊都能用同一口徑比較的資訊；像客房數、單館入住率、ADR、RevPAR 或營收，如果無法同時覆蓋一般／觀光型與商務型，就不放進這裡當比較欄位。</p>
             <h5 class="mb-3 d-flex align-items-center">
-                <span class="badge badge-luxury me-2">一般／觀光型</span> 代表性案例（非排名）
+                <span class="badge badge-luxury me-2">一般／觀光型旅館</span> 樣本案例（非排名）
             </h5>
-            <div class="table-responsive">
-                <table class="table table-hover align-middle">
-                    <thead>
-                        <tr>
-                            <th style="width: 24%;">旅館名稱</th>
-                            <th style="width: 14%;">區位</th>
-                            <th style="width: 13%;">開業／發布資訊</th>
-                            <th style="width: 9%;">客房數</th>
-                            <th style="width: 28%;">定位摘要</th>
-                            <th style="width: 12%;">資料狀態</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td class="fw-bold">Mandarin Oriental, Tokyo</td><td>日本橋室町</td><td>2005-12-02</td><td>179</td><td>奢華全服務；國際觀光、商務與餐飲目的客。</td><td>單館營收未公開</td></tr>
-                        <tr><td class="fw-bold">Bvlgari Hotel Tokyo</td><td>八重洲</td><td>2023-04-04</td><td>98</td><td>超奢華品牌型住宿；位於八重洲大型複合設施周邊。</td><td>單館營收未公開</td></tr>
-                        <tr><td class="fw-bold">Tokyo EDITION, Ginza</td><td>銀座</td><td>2023-12／2024-03</td><td>86</td><td>奢華生活風格品牌；銀座核心區位案例。</td><td>單館營收未公開</td></tr>
-                        <tr><td class="fw-bold">Hyatt Centric Ginza Tokyo</td><td>銀座</td><td>2018-01-22</td><td>164</td><td>高階生活風格全服務；外國品牌聯盟案例。</td><td>單館營收未公開</td></tr>
-                        <tr><td class="fw-bold">Aloft Tokyo Ginza</td><td>銀座</td><td>2020-10-01</td><td>205</td><td>生活風格精選服務；外國品牌聯盟案例。</td><td>單館營收未公開</td></tr>
-                        <tr><td class="fw-bold">MUJI HOTEL GINZA</td><td>銀座</td><td>2019-04-04</td><td>79</td><td>設計／品牌體驗型住宿；日本品牌案例。</td><td>單館營收未公開</td></tr>
-                        <tr><td class="fw-bold">Hotel K5</td><td>日本橋兜町</td><td>2020-02</td><td>20</td><td>小型精品設計旅館；日本橋兜町案例。</td><td>單館營收未公開</td></tr>
-                        <tr><td class="fw-bold">Mitsui Garden Hotel Ginza Tsukiji</td><td>築地</td><td>2024-09-30</td><td>183</td><td>高階城市型住宿；築地周邊新近案例。</td><td>單館營收未公開</td></tr>
-                    </tbody>
-                </table>
-            </div>
-            <p class="small text-muted mb-0">來源：代表性旅館基本資料表與各旅館／品牌官方公開頁面；本頁不使用未公開的單館營運數據。</p>
-        </div>
-
-        <div class="card p-4">
-            <h5 class="mb-3 d-flex align-items-center">
-                <span class="badge badge-business me-2">商務型</span> 名錄樣本（非排名）
-            </h5>
+            <p class="text-muted">這一表主要看「所在地、年份資訊、定位」。白話來說，它是在回答：這些旅館大多出現在中央區哪些位置、用什麼品牌或住宿型態切入市場，而不是在比較誰比較賺錢。</p>
             <div class="table-responsive">
                 <table class="table table-hover align-middle">
                     <thead>
                         <tr>
                             <th style="width: 28%;">設施名稱</th>
                             <th style="width: 14%;">所在地</th>
-                            <th style="width: 18%;">區域群</th>
-                            <th style="width: 12%;">許可年份</th>
-                            <th style="width: 28%;">開設者</th>
+                            <th style="width: 16%;">年份資訊</th>
+                            <th style="width: 42%;">定位／觀察重點</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr><td class="fw-bold">アパホテル〈銀座京橋南〉</td><td>京橋</td><td>京橋・八重洲</td><td>2013</td><td>アパホテル株式会社</td></tr>
-                        <tr><td class="fw-bold">ダイワロイネットホテル銀座 PREMIER</td><td>銀座</td><td>銀座</td><td>2015</td><td>大和ハウスリアルティマネジメント株式会社</td></tr>
-                        <tr><td class="fw-bold">東急ステイ築地</td><td>築地</td><td>築地・新富</td><td>2015</td><td>東急リゾーツ＆ステイ株式会社</td></tr>
-                        <tr><td class="fw-bold">アパホテル&lt;築地駅南&gt;</td><td>築地</td><td>築地・新富</td><td>2011</td><td>アパホテル株式会社</td></tr>
-                        <tr><td class="fw-bold">ワシントンR＆Bホテル東日本橋</td><td>東日本橋</td><td>日本橋</td><td>1998</td><td>ワシントンホテル株式会社</td></tr>
-                        <tr><td class="fw-bold">アパホテル&lt;東日本橋駅前&gt;</td><td>東日本橋</td><td>日本橋</td><td>2014</td><td>アパホテル株式会社</td></tr>
-                        <tr><td class="fw-bold">東横ＩＮＮ日本橋人形町</td><td>日本橋蛎殻町</td><td>日本橋</td><td>2004</td><td>株式会社東横イン</td></tr>
-                        <tr><td class="fw-bold">相鉄フレッサイン日本橋人形町</td><td>日本橋蛎殻町</td><td>日本橋</td><td>2012</td><td>株式会社相鉄ホテルマネジメント</td></tr>
-                        <tr><td class="fw-bold">京王プレッソイン日本橋茅場町</td><td>日本橋茅場町</td><td>日本橋</td><td>2008</td><td>株式会社京王プレッソイン</td></tr>
-                        <tr><td class="fw-bold">東横ＩＮＮ茅場町駅</td><td>日本橋茅場町</td><td>日本橋</td><td>2023</td><td>株式会社東横イン</td></tr>
+                        <tr><td class="fw-bold">Mandarin Oriental, Tokyo</td><td>日本橋室町</td><td>2005-12-02</td><td>奢華全服務；可觀察國際品牌、高階觀光與商務需求交會。</td></tr>
+                        <tr><td class="fw-bold">Bvlgari Hotel Tokyo</td><td>八重洲</td><td>2023-04-04</td><td>超奢華品牌型住宿；可觀察八重洲大型複合開發周邊的高階住宿供給。</td></tr>
+                        <tr><td class="fw-bold">Tokyo EDITION, Ginza</td><td>銀座</td><td>2023-12／2024-03</td><td>奢華生活風格品牌；可觀察銀座核心區的品牌型住宿更新。</td></tr>
+                        <tr><td class="fw-bold">Hyatt Centric Ginza Tokyo</td><td>銀座</td><td>2018-01-22</td><td>高階生活風格全服務；可觀察外國品牌在銀座的定位方式。</td></tr>
+                        <tr><td class="fw-bold">Aloft Tokyo Ginza</td><td>銀座</td><td>2020-10-01</td><td>生活風格精選服務；可觀察年輕化、設計導向住宿產品。</td></tr>
+                        <tr><td class="fw-bold">MUJI HOTEL GINZA</td><td>銀座</td><td>2019-04-04</td><td>設計／品牌體驗型住宿；可觀察日本品牌把零售體驗延伸到住宿。</td></tr>
+                        <tr><td class="fw-bold">Hotel K5</td><td>日本橋兜町</td><td>2020-02</td><td>小型精品設計旅館；可觀察日本橋兜町的再生型住宿案例。</td></tr>
+                        <tr><td class="fw-bold">Mitsui Garden Hotel Ginza Tsukiji</td><td>築地</td><td>2024-09-30</td><td>高階城市型住宿；可觀察築地周邊的新近住宿供給。</td></tr>
                     </tbody>
                 </table>
             </div>
-            <p class="small text-muted mb-0">來源：中央區旅宿名錄去重 243 筆；上表為商務型樣本，非排名或推薦清單。</p>
+            <p class="small text-muted mb-0">來源：代表性旅館基本資料表與各旅館／品牌官方公開頁面。因商務型樣本沒有同口徑完整客房數，本表也不列客房數，避免兩類表格比較基準不一致。</p>
         </div>
 
+        <div class="card p-4">
+            <h5 class="mb-3 d-flex align-items-center">
+                <span class="badge badge-business me-2">商務型旅館</span> 樣本案例（非排名）
+            </h5>
+            <p class="text-muted">這一表只留「所在地」一個地區欄位，避免同時出現所在地與區域群造成重複。白話來說，這裡是在看商務型住宿常出現在哪些町名，以及它們大多由哪些連鎖或營運公司開設。</p>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th style="width: 28%;">設施名稱</th>
+                            <th style="width: 14%;">所在地</th>
+                            <th style="width: 16%;">年份資訊</th>
+                            <th style="width: 42%;">定位／觀察重點</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td class="fw-bold">アパホテル〈銀座京橋南〉</td><td>京橋</td><td>2013</td><td>APA 系列；可觀察京橋周邊標準化商務住宿供給。</td></tr>
+                        <tr><td class="fw-bold">ダイワロイネットホテル銀座 PREMIER</td><td>銀座</td><td>2015</td><td>大和房屋系統；可觀察銀座商務與觀光混合區位的住宿供給。</td></tr>
+                        <tr><td class="fw-bold">東急ステイ築地</td><td>築地</td><td>2015</td><td>東急系統；可觀察築地周邊中長住與商務住宿需求。</td></tr>
+                        <tr><td class="fw-bold">アパホテル&lt;築地駅南&gt;</td><td>築地</td><td>2011</td><td>APA 系列；可觀察築地站周邊的經濟型商務住宿供給。</td></tr>
+                        <tr><td class="fw-bold">ワシントンR＆Bホテル東日本橋</td><td>東日本橋</td><td>1998</td><td>Washington Hotel 系列；可觀察東日本橋較早期商務住宿供給。</td></tr>
+                        <tr><td class="fw-bold">アパホテル&lt;東日本橋駅前&gt;</td><td>東日本橋</td><td>2014</td><td>APA 系列；可觀察車站前標準化商務住宿布局。</td></tr>
+                        <tr><td class="fw-bold">東横ＩＮＮ日本橋人形町</td><td>日本橋蛎殻町</td><td>2004</td><td>東横 INN 系列；可觀察日本橋生活圈內的連鎖商務住宿。</td></tr>
+                        <tr><td class="fw-bold">相鉄フレッサイン日本橋人形町</td><td>日本橋蛎殻町</td><td>2012</td><td>相鐵系統；可觀察人形町周邊交通導向住宿供給。</td></tr>
+                        <tr><td class="fw-bold">京王プレッソイン日本橋茅場町</td><td>日本橋茅場町</td><td>2008</td><td>京王系統；可觀察茅場町辦公與交通節點周邊住宿。</td></tr>
+                        <tr><td class="fw-bold">東横ＩＮＮ茅場町駅</td><td>日本橋茅場町</td><td>2023</td><td>東横 INN 系列；可觀察茅場町近年仍有商務住宿更新。</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="small text-muted mb-0">來源：中央區旅宿名錄去重 243 筆。商務型名錄沒有完整客房數與營運統計，因此本表不列客房數、入住率、ADR、RevPAR 或營收。</p>
+        </div>
+
+        <section id="development-analysis-matrix">
+            <h2 class="section-title">四、 中央區飯店開發：機能與潛力分析矩陣</h2>
+            <div class="card p-4">
+                <p class="text-muted">這個矩陣不是最終判斷，也不是指定哪一區較適合開發；它只是把目前能觀察到的資訊整理成分析框架。白話來說，就是先把「看得到的條件」和「還不能下判斷的限制」放在同一張表裡，避免因為某區看起來熱鬧，就直接跳到投資判斷。</p>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th style="width: 18%;">分析面向</th>
+                                <th style="width: 28%;">目前可觀察訊號</th>
+                                <th style="width: 28%;">可以怎麼解讀</th>
+                                <th style="width: 26%;">需要保留的限制</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="fw-bold">交通與商業機能</td>
+                                <td>旅館集中在銀座、日本橋、京橋、八重洲與築地周邊。</td>
+                                <td>這代表住宿供給靠近商業、交通與觀光活動密集的地方；用白話說，就是旅客比較容易到、也比較容易找到目的地。</td>
+                                <td>交通便利不等於單館績效較好，還需要房價、入住率與競品資料才能判斷。</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">住宿產品型態</td>
+                                <td>商務型與一般／觀光型都存在，且一般／觀光型內含品牌、生活風格、公寓式等多種樣態。</td>
+                                <td>中央區不是只有單一住宿市場；同一個地區可能同時服務商務客、觀光客、家庭與中長住需求。</td>
+                                <td>目前分類是市場定位代理，不是官方分類，也不是實際價格帶或獲利能力。</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">新近供給與更新</td>
+                                <td>八重洲、銀座、築地與日本橋周邊可看到近年開業或登錄案例。</td>
+                                <td>這些區域仍有住宿產品更新。白話說，市場不是靜止的，既有商業區還在出現新的住宿型態。</td>
+                                <td>許可年份可能是新開業、改名、承接或重新申請，不能直接當成實際新增供給。</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">資料可得性</td>
+                                <td>中央區名錄可支撐家數、地址、分類與地圖分布；東京都統計可支撐上位市場入住率趨勢。</td>
+                                <td>目前適合做供給分布與市場環境分析。白話說，可以看「哪裡有多少旅館」，但不能直接說「哪裡比較賺」。</td>
+                                <td>中央區沒有完整公開的逐館客房數、ADR、RevPAR、營收與區級入住率，因此不做營運績效判斷。</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="small text-muted mb-0">分析口徑：本矩陣使用中央區旅宿名錄、地圖分布與東京都層級住宿統計作為觀察資料；所有判讀都停留在分析階段，不作投資建議或區位優劣排序。</p>
+            </div>
+        </section>
+
         <section id="tokyo-occupancy-trend">
-            <h2 class="section-title">四、 東京都全體入住率趨勢（2015–2025）</h2>
+            <h2 class="section-title">五、 東京都全體入住率趨勢（2015–2025）</h2>
             <div class="card p-4 occupancy-section">
                 <div class="d-flex flex-column flex-md-row justify-content-between gap-3">
                     <div>
                         <h5 class="mb-2">東京都住宿設施客室稼働率（全體）</h5>
                         <p class="text-muted mb-0">依日本觀光廳「宿泊旅行統計調査」年度資料，抽取東京都「都道府県別宿泊施設タイプ別客室稼働率」中的全體欄位；2015–2024 為確定值，2025 為年間速報值。</p>
+                        <p class="text-muted mb-0 mt-2">白話來看，東京都在 2020、2021 年明顯下滑，之後逐步回升；這只能代表東京都整體住宿市場環境，不能直接套用到中央區或任何單一旅館。</p>
                     </div>
                     <div class="text-md-end">
                         <div class="fs-4 fw-bold text-primary">76.8%</div>
